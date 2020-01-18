@@ -1,0 +1,181 @@
+﻿
+@{
+    ViewBag.Title = "Credit Approval";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style type="text/css">
+        .fall {
+            font-size: 14px;
+        }
+    </style>
+</head>
+    <body>
+   
+        <div style="text-align:right!important;"><img src="~/Content/images/pertamina.png" alt="logo" /></div>
+        <h2 style="text-align:center">CREDIT APPROVAL</h2>
+        @if (ViewBag.Kredit.Jaminan != "Tidak Ada")
+        {
+            <h4 style="text-align:center; margin-top:-20px;">DENGAN JAMINAN</h4>
+        }
+        <p style="font-weight:bold; margin-top:-20px;text-align:center;">Nomor : @ViewBag.Kredit.NoSurat Tgl. @ViewBag.Kredit.CreatedAt.ToString("yyyy-MM-dd")</p>
+        <p class="fall">Dalam rangka mengantisipasi peningkatan penjualan serta memberikan salah satu fasilitas kepada pelanggan yang dilayani oleh Mitra Bisnis Transaksi BBM Pertamina @ViewBag.Kredit.MCustomer.Name, ditetapkan strategi pemasaran yang salah satu implementasinya adalah dengan fasilitas Penjualan Non Tunai.</p>
+
+        <p class="fall">Berdasarkan evaluasi dan pertimbangan aspek bisnis, PT Pertamina (Persero) dengan ini memberikan persetujuan kepada :</p>
+        <table class="fall">
+            <tr>
+                <td width="200px">Nama Perusahaan</td>
+                <td>: @ViewBag.Kredit.MCustomer.Name</td>
+            </tr>
+            <tr>
+                <td>Customer ID</td>
+                <td>: @ViewBag.Kredit.MCustomer.CustomerNo</td>
+            </tr>
+            <tr>
+                <td>Alamat</td>
+                <td>: @ViewBag.Kredit.MCustomer.Address</td>
+            </tr>
+        </table>
+
+        <p class="fall">
+            Untuk diberikan Fasilitas Penjualan Non Tunai
+            @if (ViewBag.Kredit.Jaminan != "Tidak Ada")
+            {
+                <span>Dengan Jaminan</span>
+            }
+            else
+            {
+                <span>Tanpa Jaminan</span>
+            }
+            atas pembelian produk dari PT Pertamina(Persero) dengan ketentuan sebagai berikut :
+        </p>
+
+        <table class="fall">
+            <tr>
+                <td width="240px">1. Jangka Waktu Credit Approval</td>
+                <td>: @ViewBag.Kredit.TempoStart.ToString("yyyy-MM-dd") s.d @ViewBag.Kredit.TempoEnd.ToString("yyyy-MM-dd")</td>
+            </tr>
+            <tr>
+                <td width="240px">2. Jenis Produk *)</td>
+                <td>
+                    @ViewBag.Produk
+                </td>
+            </tr>
+            <tr>
+                <td width="240px">3. Perkiraan Volume/Quantity</td>
+                <td>
+                    :  @ViewBag.Kredit.Volume @ViewBag.Kredit.Satuan per  @ViewBag.Kredit.PeriodeVolume
+
+                </td>
+            </tr>
+            <tr>
+                <td width="240px">4. Perkiraan Nilai Transaksi</td>
+                <td>
+                    : @ViewBag.Kredit.MataUang @ViewBag.Kredit.NilaiTransaksi / @ViewBag.Kredit.PeriodeVolume
+
+                </td>
+            </tr>
+            <tr>
+                <td width="240px">5. Credit Limit</td>
+                <td>: @ViewBag.Kredit.MataUang @ViewBag.Kredit.CreditLimit</td>
+            </tr>
+            <tr>
+                <td width="240px">7. Masa Perkiraan Nilai Transaksi</td>
+                <td>: @ViewBag.Kredit.MasaPerkiraanNilaiTransaksi</td>
+            </tr>
+            <tr>
+                <td width="240px">8. Term of Payment : </td>
+            </tr>
+        </table>
+
+        <table class="fall" style="text-align: center!important; border-collapse: collapse;margin: 0 auto;">
+            <tr>
+                <td style="border: 1px solid black; padding: 0 20px;">Periode Penyerahan BBM</td>
+                <td style="border: 1px solid black;">Jatuh Tempo Pembayaran</td>
+            </tr>
+            <tr>
+                <td style="border: 1px solid black;">@ViewBag.Kredit.PeriodePenyerahan</td>
+                <td style="border: 1px solid black; padding: 0 20px;">@ViewBag.Kredit.LamaTempo Setelah Penyerahan BBM</td>
+            </tr>
+        </table>
+
+        <table class="fall">
+            <tr>
+                <td width="240px">9. Mekanisme Pembayaran</td>
+                <td>: Melalui @ViewBag.Kredit.Pembayaran</td>
+            </tr>
+            <tr>
+                <td width="240px">10. Bentuk Jaminan yang diusulkan</td>
+                <td>: @ViewBag.Kredit.Jaminan</td>
+            </tr>
+            <tr>
+                <td width="240px">11. Sanksi Keterlambatan</td>
+                <td>:</td>
+                <td rowspan="2" style="border:1px solid black; height: 30px; margin-left: -128px!important; padding-left: 10px;"><b>[</b><i style="font-style: italic;border-top:0.1px solid black">Rn</i> <b>+ 4%] x nilai tunggakan x n/360</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+            </tr>
+        </table>
+        <table class="fall">
+            <tr>
+                <td width="248px">&nbsp;</td>
+                <td>
+                    <u>Keterangan : </u>
+                    <br><i style="font-style: italic;border-top:0.1px solid black;height: 30px;">Rn</i> : rata-rata JIBOR rate 1 bulan pada hari ke-n
+                    <br>n : hari keterlambatan
+                </td>
+            </tr>
+        </table>
+        <table class="fall">
+            <tr>
+                <td width="240px">12. Syarat Penyerahan</td>
+                <td>: @ViewBag.Kredit.SyaratPenyerahan</td>
+            </tr>
+            <tr>
+                <td colspan="4">13. Apabila tidak melakukan pembayaran setelah jatuh tempo pembayaran, maka penyerahan BBM akan dihentikan terhitung 1 hari kalender sejak tanggal jatuh tempo pembayaran.</td>
+            </tr>
+        </table>
+
+        <br>
+        <table>
+            <tr>
+                <td><b>PT PERTAMINA (PERSERO)</b></td>
+                <td style="width:200px">&nbsp;</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Marketing Operation Region I</td>
+                <td style="width:200px">&nbsp;</td>
+                <td>Finance Marketing Operation Region I</td>
+            </tr>
+            @if (ViewBag.Ttd != null)
+            {
+                <tr>
+
+
+                    <td>@ViewBag.Ttd.Position1</td>
+                    <td style="width:200px">&nbsp;</td>
+                    <td>@ViewBag.Ttd.Position2</td>
+
+                </tr>
+            }
+
+            <tr><td>&nbsp;</td></tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr><td>&nbsp;</td></tr>
+
+            @if (ViewBag.Ttd != null)
+            { 
+                <tr>
+                    <td><b>@ViewBag.Ttd.Name1</b></td>
+                    <td style="width:200px">&nbsp;</td>
+                    <td><b>@ViewBag.Ttd.Name2</b></td>
+                </tr>
+            }
+        </table>
+
+    </body>
+</html>
+

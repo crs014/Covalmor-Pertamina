@@ -1,0 +1,262 @@
+﻿@{
+    ViewBag.Title = "Beranda";
+}
+
+<div class="row">
+    <div class="col-lg-3 col-xs-6">
+        <div class="small-box bg-red">
+            <div class="inner">
+                <h3 id="pending-credit-number"></h3>
+                <p>Pending Kredit</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-xs-6">
+        <div class="small-box bg-yellow">
+            <div class="inner">
+                <h3 id="submited-credit-number"></h3>
+                <p>Submited Credit</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-xs-6">
+        <div class="small-box bg-green">
+            <div class="inner">
+                <h3 id="progress-credit-number"></h3>
+                <p>Progress Credit</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-xs-6">
+        <div class="small-box bg-aqua">
+            <div class="inner">
+                <h3 id="completed-credit-number">1</h3>
+                <p>Completed Credit</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 col-xs-12">
+        <div class="box box-danger" style="height:370px">
+            <div class="box-header with-border">
+                <h3 class="box-title">Status Credit</h3>
+            </div>
+            <div class="box-body">
+                <canvas id="creditChart"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-xs-12">
+        <div class="box box-danger" style="height:370px">
+            <div class="box-header with-border">
+                <h3 class="box-title">Credit yang Belum di Submit</h3>
+            </div>
+            <div class="box-body">
+                <table class="table table-bordered" id="credit-unsubmit-table">
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Perkiraan Nilai Transaksi</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="credit-unsubmit-table-body">
+                        <!--load data here next-->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6 col-xs-12">
+        <div class="box box-danger" style="height:370px">
+            <div class="box-header with-border">
+                <h3 class="box-title">Akan Jatuh Tempo</h3>
+            </div>
+            <div class="box-body">
+                <table class="table table-bordered" id="credit-tempo-table">
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Perkiraan Nilai Transaksi</th>
+                            <th>Jangka Waktu Akhir</th>
+                            <th></th> 
+                        </tr>
+                    </thead>
+                    <tbody id="credit-tempo-table-body">
+                        <!--load data here next-->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-xs-12">
+        <div class="box box-danger" style="height:370px">
+            <div class="box-header with-border">
+                <h3 class="box-title">Completed Credit</h3>
+            </div>
+            <div class="box-body">
+                <table class="table table-bordered" id="credit-completed-table">
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Customer</th>
+                            <th>Credit Limit</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="credit-completed-table-body">
+                        <!--load data here next-->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+<script>
+    let userObject = JSON.parse(sessionStorage.getItem("userdata"));
+
+    $(function () {
+        $.ajax({
+            url: "@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "CreditApproval", action = "Index"})",
+            type: "GET",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", `Bearer ${sessionStorage.getItem("authtoken")}`);
+            },
+            success: function (data) {
+                if (data.HttpStatus == 200) {
+                    loadChart(data.Data);       
+                    loadCardNumber(data.Data);
+                    LoadKreditUnsubmit(data.Data);
+                    LoadCompletedCredit(data.Data);
+                    LoadTempo(data.Data);
+                }
+                else {
+                    alert("Gagal load data!");
+                    
+                }
+            },
+            error: function () {
+                alert("Gagal load data!");
+            }
+        });
+    });
+
+    function loadCardNumber(dataAjax) {
+        const pendingCredit = dataAjax.filter(dataValue => dataValue.Status == "Draft User").length;
+        const submitedCredit = dataAjax.filter(dataValue => dataValue.Status == "AR").length;
+        const progressCredit = dataAjax.filter(dataValue => dataValue.Status == "Cash Bank" || dataValue.Status == "FBS"
+            || dataValue.Status == "Management Risiko" || dataValue.Status == "Komite Kredit").length;
+        const completedCredit = dataAjax.filter(dataValue => dataValue.Status == "Completed").length;
+
+        $("#pending-credit-number").html(pendingCredit);
+        $("#submited-credit-number").html(submitedCredit);
+        $("#progress-credit-number").html(progressCredit);
+        $("#completed-credit-number").html(completedCredit);
+    }
+
+    function loadChart(dataAjax) {
+        const AR = dataAjax.filter(dataValue => dataValue.Status == "AR").length;
+        const cashBank = dataAjax.filter(dataValue => dataValue.Status== "Cash Bank").length;
+        const FBS = dataAjax.filter(dataValue => dataValue.Status == "FBS").length;
+        const managementRisk = dataAjax.filter(dataValue => dataValue.Status == "Management Risiko").length;
+        const komiteKredit = dataAjax.filter(dataValue => dataValue.Status == "Komite Kredit").length;
+        
+        var data = {
+            datasets: [{
+                data: [AR, cashBank, FBS, managementRisk, komiteKredit],
+                backgroundColor: [
+                    "red", "blue", "green", "yellow", "purple"
+                ]
+            }],
+            labels: ["AR", "Cash Bank", "FBS", "M.Keu", "GM"]
+        };
+        var ctx = document.getElementById("creditChart").getContext("2d");
+        var myPieChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: data
+        });
+    }
+
+    function LoadKreditUnsubmit(dataAjax) {
+        let unsubmitCreditList = dataAjax.filter(dataValue => dataValue.Status == "Draft User");
+        if (userObject.Role == "AR") {
+            unsubmitCreditList = dataAjax.filter(dataValue => dataValue.Status == "AR");
+        }
+        else if (userObject.Role == "Cash Bank") {
+            unsubmitCreditList = dataAjax.filter(dataValue => dataValue.Status == "Cash Bank");
+        }
+        else if (userObject.Role == "FBS") {
+            unsubmitCreditList = dataAjax.filter(dataValue => dataValue.Status == "FBS");
+        }
+        else if (userObject.Role == "Management Resiko") {
+            unsubmitCreditList = dataAjax.filter(dataValue => dataValue.Status == "Management Risiko");
+        }
+        else if (userObject.Role == "Komite Kredit") {
+            unsubmitCreditList = dataAjax.filter(dataValue => dataValue.Status == "Komite Kredit");
+        }
+
+        unsubmitCreditList.forEach(function (item, index) {
+            $("#credit-unsubmit-table-body").append(`<tr>` +
+                `<td>${item.Customer.Name}</td>`+
+                `<td>${item.TransactionValue}</td>`+
+                `<td><a href='/Credit/Detail/${item.Id}' class='btn btn-primary'><i class='fa fa-info-circle'></i> Detail</a></td>` +
+                `</tr>`);
+        });
+
+        $("#credit-unsubmit-table").DataTable({"pageLength": 3, "lengthChange": false});
+    }
+
+
+    function LoadCompletedCredit(dataAjax) {
+        let completedCredit = dataAjax.filter(dataValue => dataValue.Status == "Completed");
+        completedCredit.forEach(function (item, index) {
+            $("#credit-completed-table-body").append(`<tr>` +
+                `<td>${formatDate(new Date(item.SubmitKKDate))}</td>`+
+                `<td>${item.Customer.Name}</td>` +
+                `<td>${item.CreditLimit}</td>`+
+                `<td><a href='/Credit/Detail/${item.Id}' class='btn btn-primary'><i class='fa fa-info-circle'></i> Detail</a></td>` +
+                `</tr>`);
+        });
+
+        $("#credit-completed-table").DataTable({"pageLength": 3, "lengthChange": false});
+    }
+
+    function LoadTempo(dataAjax) {
+        
+        let tempoCredit = dataAjax.filter(dataValue => new Date() >= new Date(new Date(dataValue.TempoEnd).setMonth(new Date().getMonth() - 2)));
+        tempoCredit.forEach(function (item, index) {
+            $("#credit-tempo-table-body").append(`<tr>` +
+                `<td>${item.Customer.Name}</td>` + 
+                `<td>${item.TransactionValue}</td>` +
+                `<td>${formatDate(new Date(item.TempoEnd))}</td>` +
+                `<td><a href='/Credit/Detail/${item.Id}' class='btn btn-primary'><i class='fa fa-info-circle'></i> Detail</a></td>` +
+            `</tr>`);
+        });
+
+         $("#credit-tempo-table").DataTable({"pageLength": 3, "lengthChange": false});
+    }
+
+    function formatDate(date) {
+        var monthNames = [
+            "January", "February", "March",
+            "April", "May", "June", "July",
+            "August", "September", "October",
+            "November", "December"
+        ];
+        var day = date.getDate();
+        var monthIndex = date.getMonth();
+        var year = date.getFullYear();
+        return day + ' ' + monthNames[monthIndex] + ' ' + year;
+    }
+
+    
+</script>
+}

@@ -1,0 +1,73 @@
+﻿@{
+    ViewBag.Title = "Nota";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+    <body>
+        <style type="text/css">
+            .fall {
+                font-size: 14px;
+            }
+        </style>
+        <div style="text-align:right!important;"><img src="~/Content/images/pertamina.png" alt="logo"/></div>
+        <h2 style="text-align:center">IDENTITAS CUSTOMER</h2>
+
+        <table>
+            <tr>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Jenis Industri</td>
+                <td>: @ViewBag.Data.JenisIndustri</td>
+            </tr>
+            <tr>
+                <td>Rata-Rata Keterlambatan Customer 1 Tahun Terakhir</td>
+                <td>: @ViewBag.Data.Keterlambatan</td>
+            </tr>
+            <tr>
+                <td>Riwayat Restrukturisasi</td>
+                <td>: @ViewBag.Data.Restrukturisasi</td>
+            </tr>
+            <tr>
+                <td>Fasilitas Kredit Oleh Perbankan</td>
+                <td>: @ViewBag.Data.FasilitasKredit</td>
+            </tr>
+            <tr>
+                <td>Lama Bekerjasama dengan Pertamina</td>
+                <td>:  @ViewBag.Data.LamaKerjaSama</td>
+            </tr>
+            <tr>
+                <td>Pelanggan Sebagai Vendor/Pemasok Pertamina</td>
+                <td>: @ViewBag.Data.VendorPemasuk </td>
+            </tr>
+            <tr>
+                <td>Posisi Tawar Pertamina terhadap Customer</td>
+                <td>:  @ViewBag.Data.PosisiTawar </td>
+            </tr>
+            <tr>
+                <td>Badan Usaha</td>
+                <td>: @ViewBag.Data.BadanUsaha</td>
+            </tr>
+            <tr>
+                <td>Affiliasi</td>
+                <td>: @ViewBag.Data.Affiliasi</td>
+            </tr>
+            <tr>
+                <td>Kondisi Industri</td>
+                <td>: @ViewBag.Data.KondisiIndustri </td>
+            </tr>
+            <tr>
+                <td>Opini Audit</td>
+                <td>: @ViewBag.Data.OpiniAudit</td>
+            </tr>
+            <tr>
+                <td>Diaudit oleh KAP terdaftar di OJK</td>
+                <td>: @ViewBag.Data.AuditKap</td>
+            </tr>
+        </table>
+    </body>
+</html>
+

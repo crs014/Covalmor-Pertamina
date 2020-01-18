@@ -1,0 +1,269 @@
+﻿
+@{
+    ViewBag.Title = "Produk";
+}
+
+<div class="row">
+    <div class="col-lg-12 col-xs-12">
+        <div class="box box-danger">
+            <div class="box-header with-border">
+                <button class="btn btn-success" onclick="addProduct()"><i class="fa fa-plus-circle"></i> Tambah Product</button>
+                <button class="btn btn-primary" onclick="uploadProduct()"><i class="fa fa-upload"></i> Upload Produk</button>
+            </div>
+            <div class="box-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped" id="table-list-product">
+                        <thead>
+                            <tr>
+                                <th>No Product</th>
+                                <th>Nama Product</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-data">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modal-form" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <form class="form-horizontal" data-toggle="validator" method="post">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"> &times;</span>
+                    </button>
+                    <h3 class="modal-title"></h3>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" value="1" name="MaterialGroup">
+                    <div class="form-group">
+                        <label for="No" class="col-md-3 control-label">No Product</label>
+                        <div class="col-md-6">
+                            <input id="MaterialNo" type="text" class="form-control" name="MaterialNo" required>
+                            <span class="help-block with-errors"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="NamaProduct" class="col-md-3 control-label">Nama Product</label>
+                        <div class="col-md-6">
+                            <input id="MaterialName" type="text" class="form-control" name="MaterialName" required />
+                            <span class="help-block with-errors"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btn-submit-form" class="btn btn-primary btn-save" value="Simpan">
+                        <i class="fa fa-floppy-o"></i> Simpan
+                    </button>
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">
+                        <i class="fa fa-arrow-circle-left"></i> Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modal-form-upload" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <form class="form-horizontal" data-toggle="validator" method="post">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"> &times;</span>
+                    </button>
+                    <h3 class="modal-title"></h3>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <input type="file" name="FileUpload" id="FileUpload" required>
+                            <span class="help-block with-errors"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-save" id="btn-submit-upload" value="Simpan">
+                        <i class="fa fa-floppy-o"></i> Simpan
+                    </button>
+                    <a class="btn btn-warning" href="" download><i class="fa fa-file-excel-o"></i> Download Template</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+
+    /*
+     * description : Declare Variable
+     */
+    var table, url, type;
+
+    $(function () {
+        /*
+         * description : load table data
+         */
+        table = $("#table-list-product").DataTable({
+            processing: true,
+            serverSide: true,
+            paging: true,
+            ajax: {
+                url: "@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Product", action = "datatable" })",
+                dataType: "JSON",
+                type: "POST",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Authorization",`Bearer ${sessionStorage.getItem("authtoken")}`);
+                }
+            },
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            columns: [
+                { data: "MaterialNo", sortable: false },
+                { data: "MaterialName", sortable: false },
+                {
+                    data: "Id",
+                    render: function (id) {
+                        return "<a onclick='editProduct(" + id + ")' class='btn btn-primary'><i class='fa fa-pencil'>" +
+                            "</i> Edit</a> " +
+                            "<a onclick='deleteProduct(" + id + ")' class='btn btn-danger'><i class='fa fa-trash'></i> Hapus</a>";
+                    },
+                    searchable: false,
+                    sortable: false
+                }
+            ],
+            buttons: [
+                {
+                    extend: 'excel',
+                    title: 'Product Data',
+                    exportOptions: {
+                        columns: [0, 1]
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    title: 'Product Data',
+                    exportOptions: {
+                        columns: [0, 1]
+                    }
+                }
+            ],
+            dom: "<'row'<'col-sm-8'l><'col-sm-3 text-right'f><'col-sm-1 text-right'B>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-5'i><'col-sm-7'p>>"
+
+         });
+    });
+
+
+    /*
+     * description : Method Add Customer
+     */
+    function addProduct() {
+        url = "@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Product", action = "Create" })";
+        type = "POST";
+        $('#modal-form').modal('show');
+        $('#modal-form form')[0].reset();
+        $('.modal-title').text('Tambah Product');
+    }
+
+
+    /*
+     * description : Method Edit Customer
+     */
+    function editProduct(ids) {;
+        type = "PATCH";
+        var urlGet = "@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Product", action = "Index", id = 0 })";
+        urlGet = urlGet.replace("0", ids);
+        url = "@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Product", action = "Update", id = 0 })";
+        url = url.replace("0", ids);
+        $.ajax({
+            url: urlGet,
+            type: "GET",
+            dataType: "JSON",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization",`Bearer ${sessionStorage.getItem("authtoken")}`);
+            },
+            success: function (res) {
+                $('#modal-form').modal('show');
+                $('.modal-title').text('Edit Product');
+                $('#MaterialNo').val(res.Data.MaterialNo);
+                $('#MaterialName').val(res.Data.MaterialName);
+            },
+            error: function () {
+                alert("Tidak Dapat Menampilkan Data");
+            }
+        });
+    }
+
+
+    /*
+     * description : Method Delete Data
+     */
+    function deleteProduct(id) {
+        if (confirm("Apakah yakin data akan dihapus?")) {
+            url = "@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Product", action = "Delete", id = 0 })";
+            url = url.replace("0", id);
+            $.ajax({
+                url: url,
+                type: "DELETE",
+                error: function () {
+                    alert("tidak dapat hapus data!");
+                },
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Authorization",`Bearer ${sessionStorage.getItem("authtoken")}`);
+                },
+                success: function (data) {
+                    if (data.HttpStatus == 200) {
+                        table.ajax.reload();
+                    }
+                    else {
+                        alert("tidak dapat hapus data!");
+                    }
+                }
+            });
+        }
+    }
+
+
+    $(function () {
+        /*
+        * description : Method Submit Form
+        */
+        $('#modal-form form').validator().on('submit', function (e) {
+            if (!e.isDefaultPrevented()) {
+                $("#btn-submit-form").prop('disabled', true);
+                $.ajax({
+                    url: url,
+                    type: type,
+                    data: $('#modal-form form').serializeToJSON(),
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Authorization",`Bearer ${sessionStorage.getItem("authtoken")}`);
+                    },
+                    success: function (data) {
+                        if (data.HttpStatus == 200 || data.HttpStatus == 201) {
+                            $('#modal-form').modal('hide');
+                            table.ajax.reload();
+                        }
+                        else {
+                            alert("tidak dapat menyimpan data!");
+                        }
+                        $("#btn-submit-form").prop('disabled', false);
+                    },
+                    error: function () {
+                        alert("tidak dapat menyimpan data!");
+                        $("#btn-submit-form").prop('disabled', false);
+                    }
+                });
+                return false;
+            }
+        });
+    });
+    </script>
+}

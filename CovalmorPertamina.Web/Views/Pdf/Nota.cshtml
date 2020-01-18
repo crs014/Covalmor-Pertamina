@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "Nota";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+    <style type="text/css">
+        .fall {
+            font-size: 14px;
+        }
+    </style>
+    <div style="text-align:right!important"><img src="~/Content/images/pertamina.png" /></div>
+    <h1>NOTA</h1>
+    <p>Medan, @ViewBag.Nota.TanggalNota.ToString("yyyy-MM-dd")</p>
+
+    <table class="fall">
+        <tr>
+            <td width="100px">Kepada</td>
+            <td> : Manager Finance MOR I</td>
+        </tr>
+        <tr>
+            <td>Dari</td>
+            <td>: Ast. Man. Finance Business Support Region I</td>
+        </tr>
+        <tr>
+            <td>Perihal</td>
+            <td>: @ViewBag.Nota.Perihal</td>
+        </tr>
+    </table>
+
+    <p class="fall">@ViewBag.Nota.Isi</p>
+    <p>Demikian disampaikan, atas perhatian dan kerja samanya kami ucapkan terima kasih.</p>
+    <p>@ViewBag.Jabatan</p>
+    <br><br><br><br>
+    <p><b>@ViewBag.User</b></p>
+
+</body>
+</html>
+

@@ -1,0 +1,693 @@
+﻿
+@{
+    ViewBag.Title = "Kredit Detail";
+}
+<div class="row">
+    <div class="col-lg-12 col-xs-12">
+        <div class="box box-danger">
+            <div class="box-header">
+                <a href="@Url.Action("Index", "Credit")" class="btn btn-primary"><i class="fa fa-external-link"></i> Back</a>
+                <h4>Credit Approval <b id="NoTiket">@ViewBag.Credit.TicketNumber</b></h4>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Customer No:</label>
+                    </div>
+                    <div class="col-md-3" id="CustomerNo">
+                        @ViewBag.Credit.Customer.CustomerNo
+                    </div>
+                    <div class="col-md-3">
+                        <label>Customer Name:</label>
+                    </div>
+                    <div class="col-md-3" id="CustomerName">
+                        @ViewBag.Credit.Customer.Name
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>NPWP:</label>
+                    </div>
+                    <div class="col-md-3" id="NPWP">
+                        @ViewBag.Credit.Customer.NPWP
+                    </div>
+                    <div class="col-md-3">
+                        <label>Alamat:</label>
+                    </div>
+                    <div class="col-md-3" id="Address">
+                        @ViewBag.Credit.Customer.Address
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>No Surat:</label>
+                    </div>
+                    <div class="col-md-6">
+                        @ViewBag.Credit.MailNumber
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Jangka Waktu Credit Approval:</label>
+                    </div>
+                    <div class="col-md-6">
+                        @ViewBag.Credit.TempoStart.Date.ToString("yyyy-MM-dd") sd @ViewBag.Credit.TempoEnd.Date.ToString("yyyy-MM-dd")
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Jenis Produk:</label>
+                    </div>
+                    <div class="col-md-6">
+                        @ViewBag.Products
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Perkiraan Volume:</label>
+                    </div>
+                    <div class="col-md-6">
+
+                        @ViewBag.Credit.Volume per @ViewBag.Credit.PeriodeVolume
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Perkiraan Nilai Transaksi:</label>
+                    </div>
+                    <div class="col-md-6">
+                        @ViewBag.Credit.Currency @ViewBag.Credit.TransactionValue
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Credit Limit:</label>
+                    </div>
+                    <div class="col-md-6">
+                        @ViewBag.Credit.Currency @ViewBag.Credit.CreditLimit
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Masa Perkiraan Nilai Transaksi:</label>
+                    </div>
+                    <div class="col-md-6">
+                        @ViewBag.Credit.TransactionValueEstimatedPeriod
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Mekanisme Pembayaran:</label>
+                    </div>
+                    <div class="col-md-6">
+                        @ViewBag.Credit.Payment
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Bentuk Jaminan:</label>
+                    </div>
+                    <div class="col-md-6">
+                        @ViewBag.Credit.Guarantee
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Sanksi Keterlambatan:</label>
+                    </div>
+                    <div class="col-md-6">
+                        @if (!ViewBag.Credit.FlagFine)
+                        {
+                            <p>Tidak</p>
+                        }
+                        else
+                        {
+                            <p>Ya</p>
+                        }
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Syarat Penyerahan:</label>
+                    </div>
+                    <div class="col-md-6">
+                        @ViewBag.Credit.TermsOfDelivery
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Memo Pengantar:</label>
+                    </div>
+                    <div class="col-md-6">
+
+                        <a href="#" onclick=loadFilePdfDocument("@Url.RouteUrl("DefaultApi", new { httproute="" ,controller="CreditApproval" ,action="MemoPengantarPdf" ,id=ViewBag.Credit.Id })")>
+                            Preview
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Laporan Keuangan Audit:</label>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="#" onclick=loadFilePdfDocument("@Url.RouteUrl("DefaultApi", new { httproute="" ,controller="CreditApproval" ,action="DocLkaPdf" ,id=ViewBag.Credit.Id })")>
+                            Preview
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Credit Approval Sebelumnya:</label>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="#" onclick=loadFilePdfDocument("@Url.RouteUrl("DefaultApi", new { httproute="" ,controller="CreditApproval" ,action="DocCasPdf" ,id=ViewBag.Credit.Id })")>
+                            Preview
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Pocket Margin dan Lainnya:</label>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="#" onclick=loadFilePdfDocument("@Url.RouteUrl("DefaultApi", new { httproute="" ,controller="CreditApproval" ,action="DocPmlPdf" ,id=ViewBag.Credit.Id })")>
+                            Preview
+                        </a>
+                    </div>
+                </div>
+                @if (ViewBag.Credit.BankGuaranteeDoc != null)
+                {
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label>Konfirmasi BG / Surat Jaminan:</label>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" onclick=loadFilePdfDocument("@Url.RouteUrl("DefaultApi", new { httproute="" ,controller="CreditApproval" ,action="BankGaransiPdf" ,id=ViewBag.Credit.Id })")>
+                                Preview
+                            </a>
+                        </div>
+                    </div>
+                }
+
+                @if (ViewBag.Credit.BankConfirmationDoc != null)
+                {
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label>Konfirmasi dari Bank:</label>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" onclick=loadFilePdfDocument("@Url.RouteUrl("DefaultApi", new { httproute="" ,controller="CreditApproval" ,action="BankKonfirmasiPdf" ,id=ViewBag.Credit.Id })")>
+                                Preview
+                            </a>
+                        </div>
+                    </div>
+                }
+
+                @if (ViewBag.Credit.CreditScoringDoc != null)
+                {
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label>Credit Scoring:</label>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" onclick=loadFilePdfDocument("@Url.RouteUrl("DefaultApi", new { httproute="" ,controller="CreditApproval" ,action="CreditScoringPdf" ,id=ViewBag.Credit.Id })")>
+                                Preview
+                            </a>
+                        </div>
+                    </div>
+                }
+
+                @if (ViewBag.Credit.CreditApprovalDoc != null)
+                {
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label>Signed Credit Approval:</label>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#" onclick=loadFilePdfDocument("@Url.RouteUrl("DefaultApi", new { httproute="" ,controller="CreditApproval" ,action="SignCreditPdf" ,id=ViewBag.Credit.Id })")>
+                                Preview
+                            </a>
+                        </div>
+                    </div>
+                }
+                <div class="row">
+                    <div class="col-md-3">
+                        <label>Tanda Tangan:</label>
+                    </div>
+                    <div class="col-md-3">
+                        <form id="form-credit-pdf">
+                            <select id="ttd" name="TtdId" class="form-control"></select>
+                        </form>
+                    </div>
+                </div>
+                <br />
+                <a class="btn btn-warning" href="#" onclick=loadFileCreditApprovalPdf()>
+                    Download Credit Approval
+                </a>
+                <hr />
+                <div class="row" id="submit-section">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="box">
+    <div class="box-header with-border">
+        <h3 class="box-title">Notes</h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                <i class="fa fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    @foreach (var note in ViewBag.Credit.TrCaActionNote)
+    {
+        <div class="box-body">
+            @note.User.Name @note.CreatedAt
+            @if (note.ActionType == 0)
+            {
+                <b style="color:red">Reject: </b>
+            }
+            else
+            {
+                <b style="color:green">Approve: </b>
+            }
+            @note.ActionNote
+        </div>
+    }
+    
+</div>
+
+@if (ViewBag.CustomerDetailObj != null)
+{
+<div class="box">
+    <div class="box-header with-border">
+        <h3 class="box-title">Identitas Customer</h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                <i class="fa fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-6">
+                <label>Jenis Industri :</label>
+            </div>
+            <div class="col-md-6">
+                @ViewBag.CustomerDetailObj.JenisIndustri
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Keterlambatan :</label>
+            </div>
+            <div class="col-md-6">
+                @ViewBag.CustomerDetailObj.Keterlambatan
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Riwayat Restrukturisasi :</label>
+            </div>
+            <div class="col-md-6">
+                @ViewBag.CustomerDetailObj.Restrukturisasi
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Fasilitas Kredit Oleh Perbankan :</label>
+            </div>
+            <div class="col-md-6">
+                @ViewBag.CustomerDetailObj.FasilitasKredit
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Lama Bekerjasama dengan Pertamina :</label>
+            </div>
+            <div class="col-md-6">
+                @ViewBag.CustomerDetailObj.LamaKerjaSama
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Pelanggan Sebagai Vendor/Pemasok Pertamina :</label>
+            </div>
+            <div class="col-md-6">
+                @ViewBag.CustomerDetailObj.VendorPemasuk
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Posisi Tawar Pertamina terhadap Customer :</label>
+            </div>
+            <div class="col-md-6">
+                @ViewBag.CustomerDetailObj.PosisiTawar
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Badan Usaha :</label>
+            </div>
+            <div class="col-md-6">
+                @ViewBag.CustomerDetailObj.BadanUsaha
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Affiliasi :</label>
+            </div>
+            <div class="col-md-6">
+                @ViewBag.CustomerDetailObj.Affiliasi
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Kondisi Industri :</label>
+            </div>
+            <div class="col-md-6">
+                @ViewBag.CustomerDetailObj.KondisiIndustri
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Opini Audit :</label>
+            </div>
+            <div class="col-md-6">
+                @ViewBag.CustomerDetailObj.OpiniAudit
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Diaudit oleh KAP terdaftar di OJK :</label>
+            </div>
+            <div class="col-md-6">
+                @ViewBag.CustomerDetailObj.AuditKap
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <a class="btn btn-warning" href="#" onclick=loadFilePdfDocument("@Url.RouteUrl("DefaultApi", new { httproute = "",controller = "CreditApproval",action = "IdentitasCustomerPdf",id = ViewBag.Credit.Id })")>
+                    Download Identitas Customer
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+@if (ViewBag.Nota != null)
+{
+<div class="box">
+    <div class="box-header with-border">
+        <h3 class="box-title">Nota Pengantar</h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                <i class="fa fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-6">
+                <label>Tanggal Nota:</label>
+            </div>
+            <div class="col-md-6">
+                ViewBag.Nota.TanggalNota.ToString("yyyy-MM-dd")
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Perihal :</label>
+            </div>
+            <div class="col-md-6">
+                @ViewBag.Nota.Perihal
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <label>Isi :</label>
+            </div>
+            <div class="col-md-6">
+                @ViewBag.Nota.Isi
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <a class="btn btn-warning" href="#" onclick=loadFilePdfDocument("@Url.RouteUrl("DefaultApi", new { httproute = "",controller = "CreditApproval",action = "UserNotePdf", id = ViewBag.Credit.Id })")>
+                    Download Nota Pengantar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+<div class="modal" id="modal-form" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <form class="form-horizontal" id="form-submit" data-toggle="validator" method="post">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"> &times;</span>
+                    </button>
+                    <h3 class="modal-title"></h3>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="hidden" id="Id" name="Id" value="ViewBag.Kredit.Id">
+                        <label for="No" class="col-md-3 control-label">Note</label>
+                        <div class="col-md-6">
+                            <textarea style="resize:none" name="ActionNote" class="form-control" width="300" height="300">
+                            </textarea>
+                            <span class="help-block with-errors"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-save">
+                        <i class="fa fa-floppy-o"></i> Simpan
+                    </button>
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">
+                        <i class="fa fa-arrow-circle-left"></i> Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let statusCredit = "@ViewBag.Credit.Status";
+    let userObject = JSON.parse(sessionStorage.getItem("userdata"));
+    let customerDetail = @ViewBag.CustomerDetail; 
+    let bankGuaranteeDoc = "@ViewBag.Credit.BankGuaranteeDoc";
+    let trCaNotes = "@ViewBag.Nota";
+    let quantitativeAspects = "@ViewBag.Credit.CreditScoringDoc";
+    let creditApprovalDoc = "@ViewBag.Credit.CreditApprovalDoc"; 
+    let methodName = "Reject";
+    let url = "";
+    let message = "";
+
+    $(function () {
+        if (userObject.Role == "User" && statusCredit == "DraftUser")
+        {
+            $("#submit-section").html(`<div class="col-md-12">` +
+                `<button class="btn btn-primary" onclick="submitCredit()"><i class="fa fa-check"></i> Submit</button> ` +
+                `<a class="btn btn-warning" href="/Credit/Edit/@ViewBag.Credit.Id"><i class="fa fa-pencil"></i> Edit</a></div>`);
+        }
+        else if (userObject.Role == "AR" && statusCredit == "AR")
+        {
+            if (customerDetail == null || customerDetail == 0)
+            {
+                $("#submit-section").html(`<div class="col-md-12">` +
+                    `<button class="btn btn-danger" onclick="rejectCredit()"><i class="fa fa-times"></i> Reject</button> ` +
+                    `<a class="btn btn-primary" href="/Credit/CreateCustomerDetail/@ViewBag.Credit.Id"><i class="fa fa-pencil"></i> Dokumen Bank</a></div>`);
+            }
+            else
+            {
+                $("#submit-section").html(`<div class="col-md-12">` +
+                    `<button class="btn btn-primary" onclick="submitCredit()"><i class="fa fa-check"></i> Submit</button> ` +
+                    `<a class="btn btn-warning" href="/Credit/EditCustomerDetail/@ViewBag.Credit.Id"><i class="fa fa-pencil"></i> Edit</a></div>`);
+            }
+        }
+        else if (userObject.Role == "Cash Bank" && statusCredit == "CashBank")
+        {
+            if (bankGuaranteeDoc == null || bankGuaranteeDoc == "")
+            {
+                $("#submit-section").html(`<div class="col-md-12">` +
+                    `<button class="btn btn-danger" onclick="rejectCredit()"><i class="fa fa-times"></i> Reject</button> ` +
+                    `<a class="btn btn-primary" href="/Credit/CashBank/@ViewBag.Credit.Id"><i class="fa fa-pencil"></i> Dokumen Bank</a></div>`);
+            }
+            else
+            {
+                $("#submit-section").html(`<div class="col-md-12">` +
+                    `<button class="btn btn-primary" onclick="submitCredit()"><i class="fa fa-check"></i> Submit</button> ` +
+                    `<a class="btn btn-warning" href="/Credit/EditCashBank/@ViewBag.Credit.Id"><i class="fa fa-pencil"></i> Edit</a></div>`);
+            }
+        }
+        else if (userObject.Role == "FBS" && statusCredit == "FBS")
+        {
+            if (trCaNotes == null || trCaNotes == "")
+            {
+                $("#submit-section").html(`<div class="col-md-12">` +
+                    `<button class="btn btn-danger" onclick="rejectCredit()"><i class="fa fa-times"></i> Reject</button> ` +
+                    `<a class="btn btn-primary" href="/Credit/FbsEntry/@ViewBag.Credit.Id"><i class="fa fa-pencil"></i> Credit Note</a></div>`);
+            }
+            else
+            {
+                if (quantitativeAspects == null || quantitativeAspects == "")
+                {
+                    $("#submit-section").html(`<div class="col-md-12">` +
+                        `<a class="btn btn-warning" href="/Credit/EditFbsEntry/@ViewBag.Credit.Id"><i class="fa fa-pencil"></i> Edit</a> ` +
+                        `<a class="btn btn-primary" href="/Credit/FbsForm/@ViewBag.Credit.Id"><i class="fa fa-plus"></i> Credit Scoring</a></div>`);
+                }
+                else
+                {
+                    $("#submit-section").html(`<div class="col-md-12">` +
+                        `<button class="btn btn-primary" onclick="submitCredit()"><i class="fa fa-check"></i> Submit</button> ` +
+                        `<a class="btn btn-warning" href="/Credit/FbsForm/@ViewBag.Credit.Id"><i class="fa fa-pencil"></i> Edit</a></div>`);
+                }
+            }
+        }
+        else if (userObject.Role == "Management Resiko" && statusCredit  == "ManagementRisk")
+        {
+            $("#submit-section").html(`<div class="col-md-12">` +
+                `<button class="btn btn-primary" onclick="submitCredit()"><i class="fa fa-check"></i> Submit</button> ` +
+                `<button class="btn btn-danger" onclick="rejectCredit()"><i class="fa fa-times"></i> Reject</button>`);
+        }
+        else if (userObject.Role == "Komite Kredit" && statusCredit == "KomiteCredit")
+        {
+            if (creditApprovalDoc == null || creditApprovalDoc == "")
+            {
+                $("#submit-section").html(`<div class="col-md-12">` +
+                    `<button class="btn btn-danger" onclick="rejectCredit()"><i class="fa fa-times"></i> Reject</button> ` +
+                    `<a class="btn btn-primary" href="/Credit/SignedCredit/@ViewBag.Credit.Id"><i class="fa fa-plus"></i> Upload Credit Approval</a></div>`);
+            }
+            else
+            {
+                $("#submit-section").html(`<div class="col-md-12">` +
+                    `<button class="btn btn-primary" onclick="submitCredit()"><i class="fa fa-check"></i> Complete</button> ` +
+                    `<a class="btn btn-warning" href="/Credit/SignedCredit/@ViewBag.Credit.Id"><i class="fa fa-pencil"></i> Edit</a></div>`);
+            }
+        }
+
+        $('#modal-form form').validator().on('submit', function (e) {
+            $(':input[type="submit"]').prop('disabled', true);
+            if (methodName == "Approve") {
+                url = "@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "CreditApproval", action = "Approve", id = 0 })";
+                url = url.replace("0", @ViewBag.Credit.Id);
+                console.log(url);
+            }
+            else {
+                url = "@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "CreditApproval", action = "Reject", id = 0 })";
+                url = url.replace("0", @ViewBag.Credit.Id);
+            }
+
+            if (!e.isDefaultPrevented()) {
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: $('#modal-form form').serializeToJSON(),
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Authorization",`Bearer ${sessionStorage.getItem("authtoken")}`);
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        if (data.HttpStatus == 200) {
+                            window.location = "@Url.Action("Index", "Credit")";
+                            
+                        }
+                        else {               
+                            $(':input[type="submit"]').prop('disabled', false);
+                            alert("tidak dapat submit credit!");
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                        $(':input[type="submit"]').prop('disabled', false);
+                        alert("tidak dapat menyimpan data!");
+                    }
+                });
+                return false;
+            } 
+        });
+
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Signature", action = "Index" })',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", `Bearer ${sessionStorage.getItem("authtoken")}`);
+            },
+            success: function (data) {
+                data.Data.forEach((item) => {
+                    var o = new Option(`${item.Name1} - ${item.Name2}`, item.Id);
+                    $(o).html(`${item.Name1} - ${item.Name2}`);
+                    $("#ttd").append(o);
+                });
+            }
+        });
+    });
+
+     /*
+    * description : Method load credit approval pdf
+    */
+    function loadFileCreditApprovalPdf() {
+        $.ajax({
+            url: "@Url.RouteUrl("DefaultApi", new { httproute="" ,controller="CreditApproval" ,action="CreditApprovalPdf" , id=ViewBag.Credit.Id })",
+            type: "POST",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", `Bearer ${sessionStorage.getItem("authtoken")}`);
+            },
+            data: $("#form-credit-pdf").serializeToJSON(),
+            success: function (data) {
+                var arrayBuffer = base64ToArrayBuffer(data);
+                var blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+                var fileURL = window.URL.createObjectURL(blob);
+                window.open(fileURL);
+            },
+            error: function () {
+                alert("Gagal ambil dokument");
+            }
+
+        });
+    }
+
+    /*
+    * description : Method display Approve model
+    */
+    function submitCredit() {
+        methodName = "Approve";
+        message = "Credit berhasil di submit";
+        $('#modal-form').modal('show');
+        $('#modal-form form')[0].reset();
+        $('.modal-title').text('Approval Credit @ViewBag.Credit.Customer.Name');
+    }
+
+   /*
+    * description : Method display Reject model
+    */
+    function rejectCredit() {
+        methodName = "Reject";
+        message = "Credit berhasil di reject";
+        $('#modal-form').modal('show');
+        $('#modal-form form')[0].reset();
+        $('.modal-title').text('Reject Credit @ViewBag.Credit.Customer.Name');
+    }
+
+
+    /*
+     * 
+     */
+    function openPdfByPost() {
+
+    }
+</script>
+}

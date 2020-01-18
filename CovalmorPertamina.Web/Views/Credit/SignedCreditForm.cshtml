@@ -1,0 +1,101 @@
+﻿
+
+<div class="row">
+    <div class="col-lg-12 col-xs-12">
+        <div class="box box-danger">
+            <div class="box-header">
+                <a href="/Credit/Detail/@ViewBag.Credit.Id" class="btn btn-primary"><i class="fa fa-external-link"></i> Back</a>
+                <h4>@ViewBag.Credit.Customer.Name</h4>
+            </div>
+            <form id="form-sign">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input class="form-control" name="CreditApprovalId" id="CreditApprovalId" value="@ViewBag.Credit.Id" type="hidden" />
+                                <label>Kode Customer MySAP:</label>
+                                <input class="form-control" value="@ViewBag.Credit.Customer.CustomerNo" disabled />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>No Surat:</label>
+                                <input class="form-control" value="@ViewBag.Credit.Customer.NPWP" disabled />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Alamat Customer:</label>
+                                <input class="form-control" value="@ViewBag.Credit.Customer.Address" disabled />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Jenis Garansi atau Jaminan:</label>
+                                <input class="form-control" value="@ViewBag.Credit.Guarantee" disabled />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Upload Signed Credit Approval:</label>
+                                <input class="form-control" type="file" name="CreditSignDoc" id="CreditSignDoc" accept=".pdf" required />
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <button class="btn btn-primary" id="btn-submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    $(document).ready(function () {
+        /*
+         * description : submit sign credit
+        */
+        $('#form-sign').validator().on('submit', function (e) {
+            if (!e.isDefaultPrevented()) {
+                var dataForm = new FormData();
+                dataForm.append("CreditSignDoc", $("#CreditSignDoc").get(0).files[0]);
+                $("#btn-submit").prop('disabled', true);
+                $.ajax({
+                    url: "@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "CreditApproval", action = "SignedCredit", id = ViewBag.Credit.Id })",
+                    type: "POST",
+                    data: dataForm,
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Authorization", `Bearer ${sessionStorage.getItem("authtoken")}`);
+                    },
+                    success: function (data) {
+                        if (data.HttpStatus == 200) {
+                            window.location = "@Url.RouteUrl("Default", new { httproute = "", controller = "Credit", action = "Detail", id = ViewBag.Credit.Id })";
+                        }
+                        else {
+                            alert("tidak dapat submit signed credit!");
+                            $("#btn-submit").prop('disabled', false);
+                        }
+                    },
+                    error: function () {
+                        alert("tidak dapat menyimpan data!");
+                        $("#btn-submit").prop('disabled', false);
+                    }
+                });
+
+                return false;
+            }
+        });
+    });
+</script>
+}
+

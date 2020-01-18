@@ -1,0 +1,140 @@
+﻿
+@{
+    ViewBag.Title = "Credit";
+}
+
+<div class="row">
+    <div class="col-lg-12 col-xs-12">
+        <div class="box box-danger">
+            <div class="box-header with-border">
+            </div>
+            <div class="box-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped" id="table-list-credit">
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Perkiraan Volumen</th>
+                                <th>Perkiraan Transaksi</th>
+                                <th>Credit Limit</th>
+                                <th>Creator</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    var table, userRole;
+
+    $(function () {
+        table = $("#table-list-credit").DataTable({
+            processing: true,
+            serverSide: true,
+            paging: true,
+            ajax: {
+                url: "@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "CreditApproval", action = "datatable" })",
+                dataType: "JSON",
+                type: "POST",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Authorization",`Bearer ${sessionStorage.getItem("authtoken")}`);
+                }
+            },
+            columns: [
+                { data: "CustomerName" },
+                { data: "PeriodeVolume" },
+                { data: "TransactionValueEstimatedPeriod" },
+                { data: "CreditLimit" },
+                { data: "Creator" },
+                {
+                    data: "Status",
+                    render: function (dataStat) {
+                        if (dataStat == "Draft User" || dataStat == "A R" || dataStat == "Cash Bank") {
+                            return "<b style='color:orange'>" + dataStat + "</b>"
+                        }
+                        if (dataStat == "F B S" || dataStat == "Management Risk") {
+                            return "<b style='color:green'>" + dataStat + "</b>"
+                        }
+                        if (dataStat == "Komite Credit" || dataStat == "Completed") {
+                            return "<b style='color:blue'>" + dataStat + "</b>"
+                        }
+                        else {
+                            return dataStat;
+                        }
+                    },
+                },
+                {
+                    data: "Id",
+                    render: function (id) {
+                        var userData = JSON.parse(sessionStorage.getItem("userdata"));
+
+                        if (userData.Role == "Admin") {
+                            return "<a href='/Credit/Detail/" + id + "' class='btn btn-primary'><i class='fa fa-info-circle'></i> Detail</a>" +
+                                " <button onclick='deleteKredit(" + id + ")' class='btn btn-danger'><i class='fa fa-trash'></i> Delete</button>";
+                        }
+                        else {
+                            return "<a href='/Credit/Detail/" + id + "' class='btn btn-primary'><i class='fa fa-info-circle'></i> Detail</a>";
+                        }
+                    },
+                    searchable: false,
+                    sortable: false
+                }
+            ],
+            buttons: [
+                {
+                    extend: 'excel',
+                    title: 'Credit Data',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5]
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    title: 'Credit Data',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4, 5]
+                    }
+                }
+            ],
+            dom: "<'row'<'col-sm-8'l><'col-sm-3 text-right'f><'col-sm-1 text-right'B>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]]
+        });
+    });
+
+    /*
+     * description : Method Delete Data
+     */
+    function deleteKredit(id) {
+        if (confirm("Apakah yakin data akan dihapus?")) {
+            url = "@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "CreditApproval", action = "Delete", id = 0 })";
+            url = url.replace("0", id);
+            $.ajax({
+                url: url,
+                type: "DELETE",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Authorization",`Bearer ${sessionStorage.getItem("authtoken")}`);
+                },
+                error: function () {
+                    alert("tidak dapat hapus data!");
+                },
+                success: function (data) {
+                    if (data.HttpStatus == 200) {
+                        table.ajax.reload();
+                    }
+                    else {
+                        alert("tidak dapat hapus data!");
+                    }
+                }
+            });
+        }
+    }
+</script>
+}

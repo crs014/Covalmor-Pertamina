@@ -1,0 +1,268 @@
+﻿
+@{
+    ViewBag.Title = "Tanda Tangan";
+}
+
+<div class="row">
+    <div class="col-lg-12 col-xs-12">
+        <div class="box box-danger">
+            <div class="box-header with-border">
+                <button class="btn btn-success" onclick="addTtd()"><i class="fa fa-plus-circle"></i> Tambah Ttd</button>
+            </div>
+            <div class="box-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped" id="table-list-ttd">
+                        <thead>
+                            <tr>
+                                <th>Nama 1</th>
+                                <th>Jabatan 1</th>
+                                <th>Nama 2</th>
+                                <th>Jabatan 2</th>
+                                <th>Document Type</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modal-form" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <form class="form-horizontal" data-toggle="validator" method="post">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true"> &times;</span>
+                    </button>
+                    <h3 class="modal-title"></h3>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="Id" name="Id">
+                    <div class="form-group">
+                        <label for="Name1" class="col-md-3 control-label">Nama 1</label>
+                        <div class="col-md-6">
+                            <input id="Name1" type="text" class="form-control" name="Name1" required>
+                            <span class="help-block with-errors"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Position1" class="col-md-3 control-label">Jabatan 1</label>
+                        <div class="col-md-6">
+                            <input id="Position1" type="text" class="form-control" name="Position1" required />
+                            <span class="help-block with-errors"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Name2" class="col-md-3 control-label">Nama 2</label>
+                        <div class="col-md-6">
+                            <input id="Name2" type="text" class="form-control" name="Name2" required>
+                            <span class="help-block with-errors"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Position2" class="col-md-3 control-label">Jabatan 2</label>
+                        <div class="col-md-6">
+                            <input id="Position2" type="text" class="form-control" name="Position2" required />
+                            <span class="help-block with-errors"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="DocumentType" class="col-md-3 control-label">Document Type</label>
+                        <div class="col-md-6">
+                            <select id="DocumentType" type="text" class="form-control" name="DocumentType" required>
+                                <option value="">Pilih Jenis Dokumen</option>
+                                <option value="CA">Credit Approval</option>
+                            </select>
+                            <span class="help-block with-errors"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-save" value="Simpan">
+                        <i class="fa fa-floppy-o"></i> Simpan
+                    </button>
+                    <button type="button" class="btn btn-warning" id="btn-submit" data-dismiss="modal">
+                        <i class="fa fa-arrow-circle-left"></i> Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+
+    /*
+     * description : Declare Variable
+     */
+    var type, table, url;
+
+
+    /*
+     * description : Load Customer Data Table
+     */
+    $(function () {
+        table = $("#table-list-ttd").DataTable({
+            processing: true,
+            serverSide: true,
+            paging: true,
+            ajax: {
+                url: "@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Signature", action = "datatable" })",
+                dataType: "JSON",
+                type: "POST",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Authorization",`Bearer ${sessionStorage.getItem("authtoken")}`);
+                }
+            },
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            columns: [
+                { data: "Name1", sortable: false },
+                { data: "Position1", sortable: false },
+                { data: "Name2", sortable: false },
+                { data: "Position2", sortable: false },
+                { data: "DocumentType", sortable: false },
+                {
+                    data: "Id",
+                    render: function (id) {
+                        return "<a onclick='editTtd(" + id + ")' class='btn btn-primary'><i class='fa fa-pencil'>" +
+                            "</i> Edit</a> " +
+                            "<a onclick='deleteTtd(" + id + ")' class='btn btn-danger'><i class='fa fa-trash'></i> Hapus</a>";
+                    },
+                    searchable: false,
+                    sortable: false
+                }
+            ],
+            buttons: [
+                {
+                    extend: 'excel',
+                    title: 'Ttd Data',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    title: 'Ttd Data',
+                    exportOptions: {
+                        columns: [0, 1, 2, 3, 4]
+                    }
+                }
+            ],
+            dom: "<'row'<'col-sm-8'l><'col-sm-3 text-right'f><'col-sm-1 text-right'B>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-5'i><'col-sm-7'p>>"
+
+        });
+    });
+
+
+    /*
+     * description : Method Add Customer
+     */
+    function addTtd() {
+        type = "POST";
+        url = "@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Signature", action = "Create" })";
+        $('#modal-form').modal('show');
+        $('#modal-form form')[0].reset();
+        $('.modal-title').text('Tambah Ttd');
+    }
+
+    /*
+     * description : Method Edit Customer
+     */
+    function editTtd(ids) {
+        type = "PATCH";
+        var urlGet = "@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Signature", action = "Index", id = 0 })";
+        urlGet = urlGet.replace("0", ids);
+        url = "@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Signature", action = "Update", id = 0 })";
+        url = url.replace("0", ids);
+        $.ajax({
+            url: urlGet,
+            type: "GET",
+            dataType: "JSON",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization",`Bearer ${sessionStorage.getItem("authtoken")}`);
+            },
+            success: function (data) {
+                $('#modal-form').modal('show');
+                $('.modal-title').text('Edit Ttd');
+                $('#Name1').val(data.Data.Name1);
+                $('#Position1').val(data.Data.Position1);
+                $('#Name2').val(data.Data.Name2);
+                $('#Position2').val(data.Data.Position2);
+                $('#DocumentType').val(data.Data.DocumentType);
+            },
+            error: function () {
+                alert("Tidak Dapat Menampilkan Data");
+            }
+        });
+    }
+
+    /*
+     * description : Method Delete Data
+     */
+    function deleteTtd(id) {
+        if (confirm("Apakah yakin data akan dihapus?")) {
+            url = "@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Signature", action = "Delete", id = 0 })";
+            url = url.replace("0", id);
+            $.ajax({
+                url: url,
+                type: "DELETE",
+                error: function () {
+                    alert("tidak dapat hapus data!");
+                },
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Authorization",`Bearer ${sessionStorage.getItem("authtoken")}`);
+                },
+                success: function (data) {
+                    if (data.HttpStatus == 200 || data.HttpStatus == 201) {
+                        table.ajax.reload();
+                    }
+                    else {
+                        alert("tidak dapat hapus data!");
+                    }
+                }
+            });
+        }
+    }
+
+    /*
+     * description : Method Submit Form
+     */
+    $(function () {
+        $('#modal-form form').validator().on('submit', function (e) {
+            if (!e.isDefaultPrevented()) {
+                $("#btn-submit").prop('disabled', true);
+                $.ajax({
+                    url: url,
+                    type: type,
+                    data: $('#modal-form form').serializeToJSON(),
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Authorization",`Bearer ${sessionStorage.getItem("authtoken")}`);
+                    },
+                    success: function (data) {
+                        if (data.HttpStatus == 200 || data.HttpStatus == 201) {
+                            $('#modal-form').modal('hide');
+                            table.ajax.reload();
+                        }
+                        else {
+                            alert("tidak dapat menyimpan data!");
+                        }
+                        $("#btn-submit").prop('disabled', false);
+                    },
+                    error: function () {
+                        alert("tidak dapat menyimpan data!");
+                        $("#btn-submit").prop('disabled', false);
+                    }
+                });
+                return false;
+            }
+        });
+    });
+
+    </script>
+}

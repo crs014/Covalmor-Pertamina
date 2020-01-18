@@ -1,0 +1,277 @@
+﻿<div class="row">
+    <div class="col-lg-12 col-xs-12">
+        <div class="box box-danger">
+            <div class="box-header">
+                <a href="/Credit/Detail/@ViewBag.Credit.Id" class="btn btn-primary"><i class="fa fa-external-link"></i> Back</a>
+                <h4>@ViewBag.Credit.Customer.Name</h4>
+            </div>
+            <form id="form-customer-detail">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <input class="form-control" name="CreditApprovalId" value="@ViewBag.Credit.Id" type="hidden" />
+                                <label>Kode Customer MySAP:</label>
+                                <input class="form-control" value="@ViewBag.Credit.Customer.CustomerNo" disabled />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>NPWP:</label>
+                                <input class="form-control" value="@ViewBag.Credit.Customer.NPWP" disabled />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Alamat Customer:</label>
+                                <input class="form-control" value="@ViewBag.Credit.Customer.Address" disabled />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Jenis Garansi atau Jaminan:</label>
+                                <input class="form-control" value="@ViewBag.Credit.Guarantee" disabled />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Jenis Industri Customer:</label>
+                                <select class="form-control" name="JenisIndustri" id="JenisIndustri" required>
+                                </select>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Rata-Rata Keterlambatan Customer 1 Tahun Terakhir:</label>
+                                        <select class="form-control" name="Keterlambatan" id="Keterlambatan" required>
+
+                                        </select>
+                                        <span class="help-block with-errors"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Riwayat Restrukturisasi:</label>
+                                        <select class="form-control" name="Restrukturisasi" id="Restrukturisasi" required>
+                                        </select>
+                                        <span class="help-block with-errors"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Fasilitas Kredit Oleh Perbankan:</label>
+                                        <select class="form-control" id="FasilitasKredit" name="FasilitasKredit" required>
+                                        </select>
+                                        <span class="help-block with-errors"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Lama Bekerjasama dengan Pertamina:</label>
+                                        <select class="form-control" id="LamaKerjaSama" name="LamaKerjaSama" required>
+                                        </select>
+                                        <span class="help-block with-errors"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Pelanggan Sebagai Vendor/Pemasok Pertamina:</label>
+                                        <select class="form-control" id="VendorPemasuk" name="VendorPemasuk" required>
+                                        </select>
+                                        <span class="help-block with-errors"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Posisi Tawar Pertamina terhadap Customer:</label>
+                                        <select class="form-control" id="PosisiTawar" name="PosisiTawar" required>
+                                        </select>
+                                        <span class="help-block with-errors"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Badan Usaha:</label>
+                                        <select class="form-control" id="BadanUsaha" name="BadanUsaha" required>
+                                        </select>
+                                        <span class="help-block with-errors"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Afiliasi:</label>
+                                        <select class="form-control" id="Affiliasi" name="Affiliasi" required>
+                                        </select>
+                                        <span class="help-block with-errors"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Kondisi Industri:</label>
+                                        <select class="form-control" id="KondisiIndustri" name="KondisiIndustri" required>
+                                        </select>
+                                        <span class="help-block with-errors"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Opini Audit:</label>
+                                        <select class="form-control" id="OpiniAudit" name="OpiniAudit" required>
+                                        </select>
+                                        <span class="help-block with-errors"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Diaudit oleh KAP terdaftar di OJK:</label>
+                                        <select class="form-control" id="AuditKap" name="AuditKap" required>
+                                        </select>
+                                        <span class="help-block with-errors"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <button class="btn btn-primary" id="btn-submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    $(function () {
+        /*
+        * description : load static dropdown
+        */
+        $.ajax({
+            type: "GET",
+            url: '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "StaticValue", action = "Index" })',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", `Bearer ${sessionStorage.getItem("authtoken")}`);
+            },
+            success: function (data) {
+                let dataStaticValue = data.Data;
+                addDataToSelectBox(dataStaticValue.filter(dataValue => dataValue.TypeName == "JenisIndustri"), "JenisIndustri", "@ViewBag.CustomerDetail.JenisIndustri");                               
+                addDataToSelectBox(dataStaticValue.filter(dataValue => dataValue.TypeName == "RataKeterlambatan"), "Keterlambatan", "@ViewBag.CustomerDetail.Keterlambatan");
+                addDataToSelectBox(dataStaticValue.filter(dataValue => dataValue.TypeName == "RiwayatRestrukturisasi"), "Restrukturisasi", "@ViewBag.CustomerDetail.Restrukturisasi");
+                addDataToSelectBox(dataStaticValue.filter(dataValue => dataValue.TypeName == "FasilitasKredit"), "FasilitasKredit", "@ViewBag.CustomerDetail.FasilitasKredit");
+                addDataToSelectBox(dataStaticValue.filter(dataValue => dataValue.TypeName == "LamaBekerjaSama"), "LamaKerjaSama", "@ViewBag.CustomerDetail.LamaKerjaSama");
+                addDataToSelectBox(dataStaticValue.filter(dataValue => dataValue.TypeName == "VendorPemasok"), "VendorPemasuk", "@ViewBag.CustomerDetail.VendorPemasuk");
+                addDataToSelectBox(dataStaticValue.filter(dataValue => dataValue.TypeName == "PosisiTawarPertamina"), "PosisiTawar", "@ViewBag.CustomerDetail.PosisiTawar");
+                addDataToSelectBox(dataStaticValue.filter(dataValue => dataValue.TypeName == "BadanUsaha"), "BadanUsaha", "@ViewBag.CustomerDetail.BadanUsaha");
+                addDataToSelectBox(dataStaticValue.filter(dataValue => dataValue.TypeName == "Afiliasi"), "Affiliasi", "@ViewBag.CustomerDetail.Affiliasi");
+                addDataToSelectBox(dataStaticValue.filter(dataValue => dataValue.TypeName == "KondisiIndustri"), "KondisiIndustri", "@ViewBag.CustomerDetail.KondisiIndustri");
+                addDataToSelectBox(dataStaticValue.filter(dataValue => dataValue.TypeName == "OpiniAudit"), "OpiniAudit", "@ViewBag.CustomerDetail.OpiniAudit");
+                addDataToSelectBox(dataStaticValue.filter(dataValue => dataValue.TypeName == "TerdaftarAuditKAP"), "AuditKap", "@ViewBag.CustomerDetail.AuditKap");
+            }
+        });
+
+
+        /*
+         * description : submit customer detail form
+         */
+        $('#form-customer-detail').validator().on('submit', function (e) {
+            $("#btn-submit").prop('disabled', true);
+            $.ajax({
+                url: "@ViewBag.Url",
+                type: "@ViewBag.FormType",
+                data: $('#form-customer-detail').serializeToJSON(),
+                beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Authorization", `Bearer ${sessionStorage.getItem("authtoken")}`);
+                },
+                success: function (data) {
+                    if (data.HttpStatus == 200 || data.HttpStatus == 201) {
+                        window.location = "@Url.RouteUrl("Default", new { httproute = "", controller = "Credit", action = "Detail", id = ViewBag.Credit.Id })";
+                    }
+                    else {
+                        alert("tidak dapat menyimpan data!");
+                    }
+                },
+                error: function () {
+                    alert("tidak dapat menyimpan data!");
+                }
+            });             
+            $("#btn-submit").prop('disabled', false);
+            return false;
+        });
+    });
+
+    /*
+     * description : method add data to select box
+     */
+    function addDataToSelectBox(data, id, realValue) {
+        data.forEach((item) => {
+            var o = new Option(item.TextValue, item.TextValue);
+            if (item.TextValue == realValue) {
+                o = new Option(item.TextValue, item.TextValue, true, true);
+            }
+            $(o).html(item.TextValue);
+            $(`#${id}`).append(o);
+        });
+    }
+
+
+</script>
+}

@@ -1,0 +1,555 @@
+﻿@section upperscripts {
+    <script>
+        var userdata = JSON.parse(sessionStorage.getItem("userdata"));
+        if (userdata.Role != "User") {
+            window.location = '@Url.Action("Login", "Home")';
+        }
+    </script>
+}
+<div class="row">
+    <div class="col-lg-12 col-xs-12">
+        <div class="box box-danger">
+            <div class="box-header">
+            </div>
+            <div class="box-body">
+                <form id="form-credit">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Customer:</label>
+                                <select class="form-control" name="Customer" id="Customer" required></select>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>No Surat:</label>
+                                <input class="form-control" name="MailNumber" id="NoSurat" type="text" value="@ViewBag.Credit.MailNumber" required />
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Jenis Produk:</label>
+                                <select class="form-control" multiple="multiple" name="Products[]" id="Products" required></select>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Perkiraan Volume</label>
+                                <input class="form-control" type="text" name="Volume" id="Volume" value="@ViewBag.Credit.Volume" required />
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>UOM:</label>
+                                <select class="form-control" name="Units" id="Satuan" required></select>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>Periode Volume:</label>
+                                <select class="form-control" name="PeriodeVolume" id="PeriodeVolume" required></select>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Jatuh Tempo:</label>
+                                <select class="form-control" id="LamaTempo" name="LongTempo" required></select>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Periode Penagihan:</label>
+                                <select class="form-control" id="PeriodePenyerahan" name="SubmissionPeriod" required></select>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Jatuh Tempo Lainnya:</label>
+                                <input class="form-control" id="LamaTempoLainnya" name="OtherLongTempo" disabled />
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Perkiraan Nilai Transaksi:</label>
+                                <input class="form-control" type="number" name="TransactionValue" id="NilaiTransaksi" value="@ViewBag.Credit.TransactionValue" required />
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Mata Uang:</label>
+                                <select class="form-control" id="MataUang" name="Currency" required></select>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Masa Perkiraan Nilai Transaksi:</label>
+                                <select class="form-control" id="MasaPerkiraanNilaiTransaksi" name="TransactionValueEstimatedPeriod" required></select>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Credit Limit:</label>
+                                <input class="form-control" type="number" name="CreditLimit" id="CreditLimit" value="@ViewBag.Credit.CreditLimit" required />
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Mekanisme Pembayaran:</label>
+                                <select class="form-control" id="Pembayaran" name="Payment" required></select>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Mekanisme Pembayaran Lainnya:</label>
+                                <input class="form-control" type="text" id="PembayaranLainnya" name="OtherPayment" value="" disabled />
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Bentuk Jaminan:</label>
+                                <select class="form-control" id="BentukJaminan" name="Guarantee" required></select>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Bentuk Jaminan Lainnya:</label>
+                                <input class="form-control" type="text" id="BentukJaminanLainnya" name="OtherGuarantee" value="" disabled />
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Sanksi Keterlambatan:</label>
+                                <select class="form-control" name="FlagFine" id="FlagDenda" required>
+                                    <option value="false" selected>Tidak</option>
+                                    <option value="true">Ya</option>
+                                </select>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Syarat Penyerahan:</label>
+                                <select class="form-control" name="TermsOfDelivery" id="SyaratPenyerahan" required></select>
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Syarat Penyerahan Lainnya:</label>
+                                <input class="form-control" name="OtherTermsOfDelivery" id="SyaratePenyerahanLainnya" value="" disabled />
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Jangka waktu awal:</label>
+                                <input type="date" class="form-control" name="TempoStart" id="TempoStart" value="@Convert.ToDateTime(@ViewBag.Credit.TempoStart).ToString("yyyy-MM-dd")" required />
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Jangka waktu akhir:</label>
+                                <input type="date" class="form-control" name="TempoEnd" id="TempoEnd" value="@Convert.ToDateTime(@ViewBag.Credit.TempoEnd).ToString("yyyy-MM-dd")" required />
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Memo Pengantar:</label>
+                                <input type="file" class="form-control" name="MemoPengantar" id="MemoPengantar" accept=".pdf" data-max-size="" required />
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>1. Laporan Keuangan Audited :</label>
+                                <input type="file" class="form-control" name="DocLka" id="DocLka" accept=".pdf" required />
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>2. Credit Approval Sebelumnya :</label>
+                                <input type="file" class="form-control" name="DocCas" id="DocCas" accept=".pdf" required />
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>3. Pocket Margin dan lainnya :</label>
+                                <input type="file" class="form-control" name="DocBg" id="DocBg" accept=".pdf" required />
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>4. Bank Garansi/Jaminan :</label>
+                                <input type="file" class="form-control" name="DocPml" id="DocPml" accept=".pdf" required />
+                                <span class="help-block with-errors"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <button class="btn btn-primary" id="btn-submit">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="box-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+
+    let type = "@ViewBag.FormType";
+    let creditId = "@ViewBag.Id";
+    let url = "@ViewBag.Url";
+    let productsSelected = [];
+    @foreach(var item in ViewBag.Products)
+    {
+        <text>
+        productsSelected.push(@item);
+        </text>
+    }
+    
+
+    $(function () {
+        /*
+        * description : load static dropdown
+        */
+        $.ajax({
+            type: "GET",
+            url: '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "StaticValue", action = "Index" })',
+            beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", `Bearer ${sessionStorage.getItem("authtoken")}`);
+            },
+            success: function (data) {
+                let dataStaticValue = data.Data;
+                addDataToSelectBox(dataStaticValue.filter(dataValue => dataValue.TypeName == "UOM"), "Satuan", "@ViewBag.Credit.Units");
+                addDataToSelectBox(dataStaticValue.filter(dataValue => dataValue.TypeName == "PeriodeVolume"), "PeriodeVolume", "@ViewBag.Credit.PeriodeVolume");
+                addDataToSelectBoxWithOther(dataStaticValue.filter(dataValue => dataValue.TypeName == "JatuhTempo"), "LamaTempo", "LamaTempoLainnya", "@ViewBag.Credit.LongTempo");
+                addDataToSelectBox(dataStaticValue.filter(dataValue => dataValue.TypeName == "PeriodePenagihan"), "PeriodePenyerahan", "@ViewBag.Credit.SubmissionPeriod");
+                addDataToSelectBox(dataStaticValue.filter(dataValue => dataValue.TypeName == "MataUang"), "MataUang", "@ViewBag.Credit.Currency");
+                addDataToSelectBox(dataStaticValue.filter(dataValue => dataValue.TypeName == "MasaPerkiraanNilaiTransaksi"), "MasaPerkiraanNilaiTransaksi", "@ViewBag.Credit.TransactionValueEstimatedPeriod");
+                addDataToSelectBoxWithOther(dataStaticValue.filter(dataValue => dataValue.TypeName == "Bank"), "Pembayaran", "PembayaranLainnya", "@ViewBag.Credit.Payment");
+                addDataToSelectBoxWithOther(dataStaticValue.filter(dataValue => dataValue.TypeName == "BentukJaminan"), "BentukJaminan", "BentukJaminanLainnya", "@ViewBag.Credit.Guarantee");
+                addDataToSelectBoxWithOther(dataStaticValue.filter(dataValue => dataValue.TypeName == "SyaratPenyerahan"), "SyaratPenyerahan", "SyaratePenyerahanLainnya", "@ViewBag.Credit.TermsOfDelivery");
+            }
+        });
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Customer", action = "Index" })',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", `Bearer ${sessionStorage.getItem("authtoken")}`);
+            },
+            success: function (data) {
+                data.Data.forEach((item) => {
+                    var o = new Option(`${item.CustomerNo} - ${item.Name}`, item.Id);
+                    $(o).html(`${item.CustomerNo} - ${item.Name}`);
+                    $("#Customer").append(o);
+                });
+            }
+        });
+
+        $.ajax({
+            type: "GET",
+            url: '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Product", action = "Index" })',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", `Bearer ${sessionStorage.getItem("authtoken")}`);
+            },
+            success: function (data) {
+                data.Data.forEach((item) => {
+                    var o = new Option(item.MaterialName, item.Id);
+                    if (productsSelected.indexOf(item.Id) != -1) {
+                        o = new Option(item.MaterialName, item.Id, true, true);
+                    }
+                    $(o).html(item.MaterialName);
+                    $("#Products").append(o);
+                });
+            }
+        })
+    });
+
+
+
+    function addDataToSelectBoxWithOther(data, id, otherId, realValue) {
+        data.forEach((item) => {
+            var o = new Option(item.TextValue, item.TextValue);
+            if (realValue == item.TextValue) {
+                o = new Option(item.TextValue, item.TextValue, true, true);
+            }
+            else {
+                if (data.map(function (e) { return e.TextValue; }).indexOf(realValue) == -1) {
+                    if (item.TextValue == "Lainnya") {
+                        o = new Option(item.TextValue, item.TextValue, true, true);
+                        $(`#${otherId}`).val(realValue);
+                        $(`#${otherId}`).prop('disabled', false);
+                    }
+                }
+            }
+            $(o).html(item.TextValue);
+            $(`#${id}`).append(o);
+        });
+    }
+
+    /*
+     * description : method add data to select box
+     */
+    function addDataToSelectBox(data, id, realValue) {
+        data.forEach((item) => {
+            var o = new Option(item.TextValue, item.TextValue);
+            if (item.TextValue == realValue) {
+                o = new Option(item.TextValue, item.TextValue, true, true);
+            }
+            $(o).html(item.TextValue);
+            $(`#${id}`).append(o);
+        });
+    }
+
+    /*
+    * description : change JatuhTempo dropdown event
+    */
+    $("#LamaTempo").change(function (value) {
+        if ($(this).val() == "Lainnya") {
+            $("#LamaTempoLainnya").prop('disabled', false);
+        }
+        else {
+            $("#LamaTempoLainnya").prop('disabled', true);
+        }
+    });
+
+    /*
+    * description : change MekanismePembayaran dropdown event
+    */
+    $("#Pembayaran").change(function (value) {
+        if ($(this).val() == "Lainnya") {
+            $("#PembayaranLainnya").prop('disabled', false);
+        }
+        else {
+            $("#PembayaranLainnya").prop('disabled', true);
+        }
+    });
+
+    /*
+    * description : change BentukJaminan dropdown event
+    */
+    $("#BentukJaminan").change(function (value) {
+        if ($(this).val() == "Lainnya") {
+            $("#BentukJaminanLainnya").prop('disabled', false);
+        }
+        else {
+            $("#BentukJaminanLainnya").prop('disabled', true);
+        }
+    });
+
+    /*
+    * description : change MekanismePembayaran dropdown event
+    */
+    $("#SyaratPenyerahan").change(function (value) {
+        if ($(this).val() == "Lainnya") {
+            $("#SyaratePenyerahanLainnya").prop('disabled', false);
+        }
+        else {
+            $("#SyaratePenyerahanLainnya").prop('disabled', true);
+        }
+    });
+
+
+    /*
+    * description : submit credit
+    */
+    $('#form-credit').validator().on('submit', function (e) {
+        if (!e.isDefaultPrevented()) {
+            $("#btn-submit").prop('disabled', true);                        
+            console.log($("#Products").val());
+            /*
+             * description : create credit approval
+             */
+            let submitCreditForm = $.ajax({
+                type: type,
+                url: url,
+                data: $("#form-credit").serializeToJSON(),
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Authorization",`Bearer ${sessionStorage.getItem("authtoken")}`);
+                }
+            });
+
+            /*
+             * description : upload memo intro 
+             */
+            let uploadMemoIntro = submitCreditForm.then(function (data) {
+                let dataForm = new FormData();         
+                let urlUpload = '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "CreditApproval", action = "UploadIntroductionMemo", id = 0 })'; 
+                urlUpload = urlUpload.replace("0", data.Data.Id);
+                creditId = data.Data.Id;
+                dataForm.append("MemoPengantar", $("#MemoPengantar").get(0).files[0]);
+                return $.ajax({
+                    url: urlUpload,
+                    data: dataForm,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    enctype: 'multipart/form-data',
+                    type: "POST",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Authorization",`Bearer ${sessionStorage.getItem("authtoken")}`);
+                    }
+                });
+            }).catch(function (error) {
+                alert("Error input credit");
+                console.log(error);
+                $("#btn-submit").prop('disabled', false);
+            });
+
+            /*
+             * description : upload doc lka
+             */
+            let uploadDocLka = uploadMemoIntro.then(function (data) {
+                let dataForm = new FormData();         
+                let urlUpload = '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "CreditApproval", action = "UploadDocLka", id = 0 })'; 
+                urlUpload = urlUpload.replace("0", creditId);
+                dataForm.append("DocLka", $("#DocLka").get(0).files[0]);
+                return $.ajax({
+                    url: urlUpload,
+                    data: dataForm,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    enctype: 'multipart/form-data',
+                    type: "POST",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Authorization", `Bearer ${sessionStorage.getItem("authtoken")}`);
+                    }
+                });
+            }).catch(function (error) {
+                alert("Error upload doc intro")
+                $("#btn-submit").prop('disabled', false);
+            });
+
+            /*
+             * description: upload doc cas
+             */
+            let uploadDocCas = uploadDocLka.then(function (data) {
+                let dataForm = new FormData();
+                let urlUpload = '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "CreditApproval", action = "UploadDocCas", id = 0 })';
+                urlUpload = urlUpload.replace("0", creditId);
+                dataForm.append("DocCas", $("#DocCas").get(0).files[0]);
+                return $.ajax({
+                    url: urlUpload,
+                    data: dataForm,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    enctype: 'multipart/form-data',
+                    type: "POST",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Authorization", `Bearer ${sessionStorage.getItem("authtoken")}`);
+                    }
+                });
+            }).catch(function (error) {
+                console.log(error);
+                alert("Error upload doc lka");
+                $("#btn-submit").prop('disabled', false);
+            });
+
+            /*
+             * description: upload doc bg 
+             */
+            let uploadDocBg = uploadDocCas.then(function (data) {
+                var dataForm = new FormData();
+                var urlUpload = '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "CreditApproval", action = "UploadDocBg", id = 0 })';
+                urlUpload = urlUpload.replace("0", creditId);
+                dataForm.append("DocBg", $("#DocBg").get(0).files[0]);
+                return $.ajax({
+                    url: urlUpload,
+                    data: dataForm,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    enctype: 'multipart/form-data',
+                    type: "POST",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Authorization", `Bearer ${sessionStorage.getItem("authtoken")}`);
+                    }
+                });
+            }).catch(function (error) {
+                console.log(error);
+                alert("Error upload doc cas")
+                $("#btn-submit").prop('disabled', false);
+            });
+
+            /*
+             * desciption: upload doc 
+             */
+            let uploadDocPml = uploadDocBg.then(function (data) {
+                var dataForm = new FormData();
+                let urlUpload = '@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "CreditApproval", action = "UploadDocPml", id = 0 })';
+                urlUpload = urlUpload.replace("0", creditId);
+                dataForm.append("DocPml", $("#DocPml").get(0).files[0]);
+                return $.ajax({
+                    url: urlUpload,
+                    data: dataForm,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    enctype: 'multipart/form-data',
+                    type: "POST",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Authorization", `Bearer ${sessionStorage.getItem("authtoken")}`);
+                    }
+                });
+            }).catch(function (error) {
+                console.log(error);
+                alert("Error upload doc bg")
+                $("#btn-submit").prop('disabled', false);
+            });
+
+            /*
+             * description: done all request 
+             */
+            uploadDocPml.done(function (data) {
+                var urlRedirect = '@Url.RouteUrl("Default", new { httproute = "", controller = "Credit", action = "Detail", id = 0 })';
+                urlRedirect = urlRedirect.replace("0", creditId);
+                window.location = urlRedirect;
+            });
+            return false;
+        }
+    });
+</script>
+}
+

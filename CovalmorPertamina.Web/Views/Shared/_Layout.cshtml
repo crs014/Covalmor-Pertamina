@@ -1,0 +1,310 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Covalmor</title>
+    <link rel="shortcut icon" href="~/Content/Icon/favicon.ico">
+    @Styles.Render("~/Content/css")
+    <script>
+        /*
+         * description : authentication proccess
+         */
+        const authToken = sessionStorage.getItem("authtoken");
+        if (authToken == null || authToken == undefined) {
+            window.location = '@Url.Action("Login", "Home")';
+        }
+    </script>
+    @RenderSection("upperscripts", required: false)
+</head>
+<body class="hold-transition skin-black sidebar-mini">
+    <div class="wrapper">
+        <header class="main-header">
+            <a href="/" class="logo">
+                <span class="logo-mini"><img src="~/Content/images/pertamina-logo.png" /></span>
+                <span class="logo-lg"><img src="~/Content/images/pertamina.png" /></span>
+            </a>
+            <nav class="navbar navbar-static-top" role="navigation">
+
+                <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        <li href="#"><a href="#" onclick="signOut()">Sign out</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <aside class="main-sidebar">
+            <section class="sidebar">
+                <ul class="sidebar-menu" id="sidebar-menu" data-widget="tree">
+                    <!--load other menu item base on user role-->
+                </ul>
+            </section>
+        </aside>
+
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Create the tabs -->
+            <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
+                <li class="active"><a href="#control-sidebar-home-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
+                <li><a href="#control-sidebar-settings-tab" data-toggle="tab"><i class="fa fa-gears"></i></a></li>
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <!-- Home tab content -->
+                <div class="tab-pane active" id="control-sidebar-home-tab">
+                    <h3 class="control-sidebar-heading">Recent Activity</h3>
+                    <ul class="control-sidebar-menu">
+                        <li>
+                            <a href="javascript:;">
+                                <i class="menu-icon fa fa-birthday-cake bg-red"></i>
+
+                                <div class="menu-info">
+                                    <h4 class="control-sidebar-subheading">Langdon's Birthday</h4>
+
+                                    <p>Will be 23 on April 24th</p>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- /.control-sidebar-menu -->
+
+                    <h3 class="control-sidebar-heading">Tasks Progress</h3>
+                    <ul class="control-sidebar-menu">
+                        <li>
+                            <a href="javascript:;">
+                                <h4 class="control-sidebar-subheading">
+                                    Custom Template Design
+                                    <span class="pull-right-container">
+                                        <span class="label label-danger pull-right">70%</span>
+                                    </span>
+                                </h4>
+
+                                <div class="progress progress-xxs">
+                                    <div class="progress-bar progress-bar-danger" style="width: 70%"></div>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- /.control-sidebar-menu -->
+
+                </div>
+                <!-- /.tab-pane -->
+                <!-- Stats tab content -->
+                <div class="tab-panel" id="control-sidebar-stats-tab">Stats Tab Content</div>
+                <!-- /.tab-pane -->
+                <!-- Settings tab content -->
+                <div class="tab-panel" id="control-sidebar-settings-tab">
+                    <form method="post">
+                        <h3 class="control-sidebar-heading">General Settings</h3>
+
+                        <div class="form-group">
+                            <label class="control-sidebar-subheading">
+                                Report panel usage
+                                <input type="checkbox" class="pull-right" checked>
+                            </label>
+
+                            <p>
+                                Some information about this general settings option
+                            </p>
+                        </div>
+                        <!-- /.form-group -->
+                    </form>
+                </div>
+                <!-- /.tab-pane -->
+            </div>
+        </aside>
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1>
+                    @ViewBag.Title
+                </h1>
+            </section>
+            <section class="content container-fluid">
+                @RenderBody()
+            </section>
+        </div>
+    </div>
+    @Scripts.Render("~/Script/plugin")
+    <script>
+        /*
+         * description : set select2 bootstrap theme
+         */
+        $(document).ready(function () {
+            $('select').select2({
+                theme: "bootstrap" 
+            });
+        });
+
+        
+        /*
+         * description : refresh token method
+         */
+        function refreshToken() {
+            $.ajax({
+                url: "@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "User", action = "RefreshToken" })",
+                dataType: "JSON",
+                type: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify({ RefreshToken: sessionStorage.getItem("refreshtoken") }),
+                success: function (data) {
+                    sessionStorage.setItem("authtoken", data.Data.Token);
+                    sessionStorage.setItem("refreshtoken", data.Data.RefreshToken);
+                },
+                error: function () {
+                    alert("Gagal refresh token pada awal load page");
+                    window.location = '@Url.Action("Login", "Home")';
+                }
+            });
+        }
+
+        /*
+         * description : first load page always refresh token 
+         */
+        refreshToken();
+
+
+        /*
+         * description : load sidebar menu
+         */
+        $.ajax({
+            url: "@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Common", action = "MenuItem" })",
+            dataType: "JSON",
+            type: "GET",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization",`Bearer ${sessionStorage.getItem("authtoken")}`);
+            },
+            success: function (data) {
+                var treeviewItems = [];
+
+                /*
+                * description : add base on user role menu
+                */
+                data.Data.forEach(function (item) {
+
+                    $("#sidebar-menu").append("<li class='treeview'>" +
+                        "<a href='#'>" +
+                        `<i class="${item.IconClass}"></i> <span>${item.Label}</span>` +
+                        "<span class='pull-right-container'>" +
+                        "<i class='fa fa-angle-left pull-right'></i>" +
+                        "</span>" +
+                        "</a>" +
+                        "<ul class='treeview-menu item-menu-list-tree'></li>");
+                    treeviewItems.push(item.ItemMenu);
+                });
+
+                /*
+                 * description : add treeview item
+                 */
+                $(".item-menu-list-tree").each(function (index) {
+                    treeviewItems[index].forEach((item) => {
+                        $(this).append(`<li><a href="${item.ActionName}">${item.Label}</a></li>`);
+                    });
+                });
+
+
+                /*
+                 * description : add header menu and guidance
+                 */
+                $("#sidebar-menu").append("<li class='treeview'>" +
+                    "<a href='#'>"+
+                    "<i class='fa fa-file-pdf-o'></i> <span>Guidance</span>" +
+                    "<span class='pull-right-container'>"+
+                    "<i class='fa fa-angle-left pull-right'></i>"+
+                    "</span>"+
+                    "</a>"+
+                    "<ul class='treeview-menu'>"+
+                    "<li><a href='#' onclick=loadFilePdfDocument('@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Common", action = "1TKOPNT" })')>TKO Penjualan Non Tunai</a></li>" +
+                    "<li><a href='#' onclick=loadFilePdfDocument('@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Common", action = "2TKOCA" })')>TKO Credit Approval</a></li>"+
+                    "<li><a href='#' onclick=loadFilePdfDocument('@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Common", action = "3TKI" })')>TKI</a></li>"+
+                    "<li><a href='#' onclick=loadFilePdfDocument('@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Common", action = "4SKO" })')>SK Otorisasi</a></li>"+
+                    "<li><a href='#' onclick=loadFilePdfDocument('@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Common", action = "5LKPBP" })')>Laporan KPBP</a></li>"+
+                    "<li><a href='#' onclick=loadFilePdfDocument('@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Common", action = "6SPKK" })')>Surat Perintah Komite Kredit</a></li>"+
+                    "</ul>"+
+                    "</li>");
+                $("#sidebar-menu").prepend("<li><a href='@Url.Action("Index","")'><i class='fa fa-home'></i> <span>Home</span></a></li>");
+                $("#sidebar-menu").prepend("<li class='header'>MENU</li>");
+            },
+            error: function () {
+
+            }
+        });
+
+
+        
+        /*
+         * description : convert base64 to array buffer
+         */
+        function base64ToArrayBuffer(base64) {
+            var binaryString = window.atob(base64);
+            var binaryLen = binaryString.length;
+            var bytes = new Uint8Array(binaryLen);
+            for (var i = 0; i < binaryLen; i++) {
+                var ascii = binaryString.charCodeAt(i);
+                bytes[i] = ascii;
+            }
+            return bytes;
+        }
+
+        /*
+         * description : load pdf file document
+         */
+        function loadFilePdfDocument(url) {
+            $.ajax({
+                url: url,
+                type: "GET",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Authorization", `Bearer ${sessionStorage.getItem("authtoken")}`);
+                },
+                success: function (data) {
+                    var arrayBuffer = base64ToArrayBuffer(data);
+                    var blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+                    var fileURL = window.URL.createObjectURL(blob);
+                    window.open(fileURL);
+                },
+                error: function () {
+                    alert("Gagal ambil dokument");
+                }
+            });
+        }
+
+        function loadFilePdfDocumentWithBody(url, bodyForm) {
+            $.ajax({
+                url: url,
+                type: "GET",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Authorization", `Bearer ${sessionStorage.getItem("authtoken")}`);
+                },
+                data: bodyForm.serializeToJSON(),
+                success: function (data) {
+                    var arrayBuffer = base64ToArrayBuffer(data);
+                    var blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+                    var fileURL = window.URL.createObjectURL(blob);
+                    window.open(fileURL);
+                },
+                error: function () {
+                    alert("Gagal ambil dokument");
+                }
+            });
+        }
+
+        /*
+        * description : every 7 minutes always refreshed token
+        */
+        setInterval(refreshToken, 420000);
+
+
+        /*
+         * description : logout or sign out method
+         */
+        function signOut() {
+            sessionStorage.removeItem("authtoken");
+            sessionStorage.removeItem("refreshtoken");
+            sessionStorage.removeItem("userdata");
+            window.location = '@Url.Action("Login", "Home")';
+        }
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>
