@@ -71,5 +71,18 @@ namespace CovalmorPertamina.Entity.Repository
                 return customer;
             });
         }
+
+        public Task<IQueryable<Customer>> CreateMany(IQueryable<Customer> customers)
+        {
+            return Task.Run(() =>
+            {
+                foreach (Customer customer in customers)
+                {
+                    _db.Customers.Add(customer);
+                }
+                _db.SaveChanges();
+                return customers;
+            });
+        }
     }
 }

@@ -15,5 +15,7 @@ namespace CovalmorPertamina.Entity.Repository.Interfaces
         Task<Product> Delete(int id);
 
         Task<Product> Update(int id, Product data);
+
+        Task<IQueryable<Product>> CreateMany(IQueryable<Product> products);
     }
 }

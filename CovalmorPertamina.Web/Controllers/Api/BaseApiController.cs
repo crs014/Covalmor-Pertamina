@@ -1,8 +1,13 @@
 ﻿using CovalmorPertamina.Common.Interfaces;
 using CovalmorPertamina.Common.Services;
+using CovalmorPertamina.Common.Statics;
 using CovalmorPertamina.Entity.Repository.Interfaces;
 using CovalmorPertamina.Web.Models;
+using LinqToExcel;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.OleDb;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -93,6 +98,46 @@ namespace CovalmorPertamina.Web.Controllers.Api
                 file.SaveAs(path);
             }
             return file != null ? pathStorage + "/" + fileName : null;
+        }
+
+        protected Tuple<ExcelQueryFactory,string> ExcelToData()
+        {
+            HttpPostedFile file = HttpContext.Current.Request.Files.Count > 0 ?
+               HttpContext.Current.Request.Files[0] : null;
+           
+            if (file != null && file.ContentLength > 0)
+            {
+                if (file.ContentType == "application/vnd.ms-excel" ||
+                      file.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                {
+                    string filename = file.FileName;
+                    string pathFile = Path.Combine(ConstantValue.FilePath.TemporaryPath, filename);
+                    string connectionString = "";
+                    file.SaveAs(pathFile);
+                    if (filename.EndsWith(".xls"))
+                    {
+                        connectionString = string.Format("Provider=Microsoft.Jet.OLEDB.4.0; data source={0}; Extended Properties=Excel 8.0;", pathFile);
+                    }
+                    else if (filename.EndsWith(".xlsx"))
+                    {
+                        connectionString = string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Extended Properties=\"Excel 12.0 Xml;HDR=YES;IMEX=1\";", pathFile);
+                    }
+                    var adapter = new OleDbDataAdapter("SELECT * FROM [Sheet1$]", connectionString);
+                    var ds = new DataSet();
+                    adapter.Fill(ds, "ExcelTable");
+                    DataTable dtable = ds.Tables["ExcelTable"];
+                    var excelFile = new ExcelQueryFactory(pathFile);
+                    return new Tuple<ExcelQueryFactory, string>(excelFile, pathFile);
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }
+            else
+            {
+                throw new Exception();
+            }
         }
         #endregion
 

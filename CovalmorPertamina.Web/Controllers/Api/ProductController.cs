@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using CovalmorPertamina.Common.Services;
+using CovalmorPertamina.Common.Statics;
 using CovalmorPertamina.Entity;
 using CovalmorPertamina.Entity.Enum;
 using CovalmorPertamina.Entity.Model;
@@ -143,6 +145,47 @@ namespace CovalmorPertamina.Web.Controllers.Api
                 }
                 return new HttpJsonApiResult<ProductModel>(
                     new ProductModel(product), Request, HttpStatusCode.OK);
+            }
+            catch (Exception)
+            {
+                return new HttpJsonApiResult<string>(
+                   "Internal Server Error", Request, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [ActionName("DownloadTemplate")]
+        [JWTAuth(new EUserRole[] { EUserRole.Admin })]
+        public IHttpActionResult DownloadTemplate()
+        {
+            try
+            {
+                string path = Path.Combine(ConstantValue.FilePath.ExcelPath, ConstantValue.FilePath.ProductTemplateXlsx);
+                byte[] fileByte = File.ReadAllBytes(path);
+                return new HttpJsonApiResult<string>(Convert.ToBase64String(fileByte), Request, HttpStatusCode.OK);
+            }
+            catch (Exception)
+            {
+                return new HttpJsonApiResult<string>(
+                   "Internal Server Error", Request, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [ActionName("Import")]
+        [JWTAuth(new EUserRole[] { EUserRole.Admin })]
+        public async Task<IHttpActionResult> Import()
+        {
+            try
+            {
+                var excelToData = ExcelToData();
+                IQueryable<Product> excelProduct = from a in excelToData.Item1.Worksheet<Product>("Sheet1") select a;
+                IQueryable<Product> products = await _productRepository.CreateMany(excelProduct);
+                if ((File.Exists(excelToData.Item2)))
+                {
+                    File.Delete(excelToData.Item2);
+                }
+                return new HttpJsonApiResult<string>("Success", Request, HttpStatusCode.OK);
             }
             catch (Exception)
             {

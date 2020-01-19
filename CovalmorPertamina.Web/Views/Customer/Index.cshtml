@@ -113,7 +113,7 @@
                     <button type="submit" class="btn btn-primary btn-save" id="btn-submit-upload" value="Simpan">
                         <i class="fa fa-floppy-o"></i> Simpan
                     </button>
-                    <a class="btn btn-warning" href="@Url.Action("DownloadTemplate", "Customer")" download><i class="fa fa-file-excel-o"></i> Download Template</a>
+                    <a class="btn btn-warning" href="#" onclick='downloadFileTemplate("@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Customer", action = "DownloadTemplate" })", "customer_template")'><i class="fa fa-file-excel-o"></i> Download Template</a>
                 </div>
             </form>
         </div>
@@ -200,13 +200,14 @@
     /*
     * description : Method upload Customer
     */
-        function uploadCustomer() {
-            saveMethod = "add";
-            $('#modal-form-upload').modal('show');
-            $('#modal-form-upload form')[0].reset();
-            $('.modal-title').text('Upload Customer');
-            $("#btn-submit").prop('disabled', false);
-        }
+    function uploadCustomer() {
+        saveMethod = "add";
+        $('#modal-form-upload').modal('show');
+        $('#modal-form-upload form')[0].reset();
+        $('.modal-title').text('Upload Customer');
+        $("#btn-submit").prop('disabled', false);
+    }
+
     /*
      * description : Method Edit Customer
      */
@@ -306,23 +307,19 @@
             if (!e.isDefaultPrevented()) {
                 var dataForm = new FormData();
                 dataForm.append("FileUpload", $("#FileUpload").get(0).files[0]);
-
-
                 $.ajax({
-                    url: "@Url.Action("UploadExcel", "Customer")",
+                    url: "@Url.RouteUrl("DefaultApi", new { httproute = "", controller = "Customer", action = "Import" })",
                     type: "POST",
                     data: dataForm,
                     enctype: 'multipart/form-data',
                     processData: false,
                     contentType: false,
                     cache: false,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Authorization",`Bearer ${sessionStorage.getItem("authtoken")}`);
+                    },
                     success: function (data) {
-                        if (data == "Failed") {
-                            alert("tidak dapat menyimpan data!");
-                            $('#modal-form-upload').modal('hide');
-                            table.ajax.reload();
-                        }
-                        else {
+                        if (data.HttpStatus == 200) {
                             $('#modal-form-upload').modal('hide');
                             table.ajax.reload();
                         }

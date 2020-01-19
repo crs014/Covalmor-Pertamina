@@ -68,5 +68,18 @@ namespace CovalmorPertamina.Entity.Repository
                 return product;
             });
         }
+
+        public Task<IQueryable<Product>> CreateMany(IQueryable<Product> products)
+        {
+            return Task.Run(() =>
+            {
+                foreach(Product product in products)
+                {
+                    _db.Products.Add(product);
+                }
+                _db.SaveChanges();
+                return products;
+            });
+        }
     }
 }

@@ -14,6 +14,8 @@ using CovalmorPertamina.Entity;
 using JQDT.WebAPI;
 using CovalmorPertamina.Web.Models.DataTable;
 using System.Linq;
+using CovalmorPertamina.Common.Statics;
+using System.IO;
 
 namespace CovalmorPertamina.Web.Controllers.Api
 {
@@ -151,6 +153,48 @@ namespace CovalmorPertamina.Web.Controllers.Api
             {
                 return new HttpJsonApiResult<string>(
                     "Internal Server Error", Request, HttpStatusCode.InternalServerError);
+            }
+        }
+
+
+        [HttpPost]
+        [ActionName("DownloadTemplate")]
+        [JWTAuth(new EUserRole[] { EUserRole.Admin })]
+        public IHttpActionResult DownloadTemplate()
+        {
+            try
+            {
+                string path = Path.Combine(ConstantValue.FilePath.ExcelPath, ConstantValue.FilePath.CustomerTemplateXlsx);
+                byte[] fileByte = File.ReadAllBytes(path);
+                return new HttpJsonApiResult<string>(Convert.ToBase64String(fileByte), Request, HttpStatusCode.OK);
+            }
+            catch (Exception)
+            {
+                return new HttpJsonApiResult<string>(
+                   "Internal Server Error", Request, HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [ActionName("Import")]
+        [JWTAuth(new EUserRole[] { EUserRole.Admin })]
+        public async Task<IHttpActionResult> Import()
+        {
+            try
+            {
+                var excelToData = ExcelToData();
+                IQueryable<Customer> excelCustomer = from a in excelToData.Item1.Worksheet<Customer>("Sheet1") select a;
+                IQueryable<Customer> customers = await _customerRepository.CreateMany(excelCustomer);
+                if ((File.Exists(excelToData.Item2)))
+                {
+                    File.Delete(excelToData.Item2);
+                }
+                return new HttpJsonApiResult<string>("Success", Request, HttpStatusCode.OK);
+            }
+            catch (Exception)
+            {
+                return new HttpJsonApiResult<string>(
+                   "Internal Server Error", Request, HttpStatusCode.InternalServerError);
             }
         }
     }

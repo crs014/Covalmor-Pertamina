@@ -269,6 +269,38 @@
             });
         }
 
+        /*
+         * description : download template excel
+         */
+        function downloadFileTemplate(url, templateName) {
+            $.ajax({
+                url: url,
+                type: "POST",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Authorization", `Bearer ${sessionStorage.getItem("authtoken")}`);
+                },
+                success: function (data) {
+                    var arrayBuffer = base64ToArrayBuffer(data.Data);
+                    var blob = new Blob([arrayBuffer], { type: 'application/vnd.ms-excel' });
+                    var fileURL = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = fileURL;
+                    a.download = `${templateName}.xlsx`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                },
+                error: function (err) {
+                    console.log(err);
+                    alert("Gagal ambil dokument");
+                }
+            });
+        }
+
+        /*
+         * description : load pdf file document with body request
+         */
         function loadFilePdfDocumentWithBody(url, bodyForm) {
             $.ajax({
                 url: url,

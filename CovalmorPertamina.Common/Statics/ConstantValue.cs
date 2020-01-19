@@ -416,6 +416,8 @@
             public static string Pdf6SPKKPathFile ="~/Content/guidance/6_SPKK.pdf";
 
             public static string TemplatePath = GetBasePath() + @"\Content\Template";
+            public static string TemporaryPath = GetBasePath() + @"\Content\Temporary";
+            public static string ExcelPath = GetBasePath() + @"\Content\Excel";
             public static string MemoPengantarBasePath = GetBasePath() + @"\Content\Document\MemoPengantar";
             public static string DocLkaBasePath = GetBasePath() + @"\Content\Document\DocLka";
             public static string DocCasBasePath = GetBasePath() + @"\Content\Document\DocCas";
@@ -435,6 +437,8 @@
             public static string IdentitasCustomerPdf = "IdentitasCustomer.pdf";
             public static string UserNotePdf = "UserNote.pdf";
             public static string CreditApprovalPdf = "CreditApproval.pdf";
+            public static string ProductTemplateXlsx = "product_template.xlsx";
+            public static string CustomerTemplateXlsx = "customer_template.xlsx";
 
         }
     }
